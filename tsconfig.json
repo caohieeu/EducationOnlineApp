@@ -9,6 +9,7 @@
     }
   },
   "include": [
+    "**/*.*.tsx",
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
