@@ -7,7 +7,10 @@ import { commonStyles } from '@/styles/common'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Entypo, FontAwesome, Fontisto, Ionicons, SimpleLineIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { subscribeForKeyboardEvents } from 'react-native-reanimated/lib/typescript/reanimated2/core'
+import axios from 'axios';
+import { SERVER_URI } from '@/utils/uri'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'react-native-toast-notifications'
 
 export default function SigninScreen() {
     let [fontsLoaded, fontError] = useFonts({
@@ -20,7 +23,7 @@ export default function SigninScreen() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [buttonSpinner, setButtonSpinner] = useState(false);
     const [userInfo, setUserInfo] = useState({
-        email: "",
+        username: "",
         password: ""
     })
     const [required, setRequired] = useState("");
@@ -55,10 +58,44 @@ export default function SigninScreen() {
         else {
             setError({...error, password: ""})
         }
+        setUserInfo({...userInfo, password: password});
     }
 
-    const handleSigin = () => {
+    const handleSigin = async () => {
         setButtonSpinner(true);
+        if(validateInput(userInfo.username, userInfo.password)) {
+            console.log(userInfo.username + " - " + userInfo.password)
+            await axios
+            .post(`${SERVER_URI}/api/User/auth`, {
+                userName: userInfo.username,
+                password: userInfo.password,
+            })
+            .then(async (res) => {
+                const token = res.headers["set-cookie"];
+                await AsyncStorage.setItem('access_token', JSON.stringify(token));
+                setButtonSpinner(false);
+                router.push("/(tabs)");
+            })
+            .catch((err) => {
+                setButtonSpinner(false);
+                Toast.show("Wrong username or password!", {
+                    type: "danger",
+                    duration: 1400
+                });
+            })
+        }
+    }
+
+    var validateInput = (usernameField:string, passwordField:string) => {
+        if(usernameField.trim().length === 0 || passwordField.trim().length === 0) {
+            Toast.show("Please enter username and password!", {
+                type: "warning",
+                duration: 1400
+            })
+            setButtonSpinner(false);
+            return false;
+        }
+        return true;
     }
 
     return (
@@ -77,14 +114,14 @@ export default function SigninScreen() {
                     <View style={{paddingBottom: 10}}>
                         <TextInput 
                             style={[commonStyles.input, {paddingLeft: 45}]}
-                            keyboardType="email-address"
-                            value={userInfo.email}
-                            placeholder="youremail@gmail.com"
-                            onChangeText={(value) => setUserInfo({...userInfo, email:value})}
+                            keyboardType="default"
+                            value={userInfo.username}
+                            placeholder="Username"
+                            onChangeText={(value) => setUserInfo({...userInfo, username:value})}
                         />
                         <Fontisto 
                             style={{position: "absolute", left: 15, top: 17.8}}
-                            name="email"
+                            name="person"
                             size={20}
                             color={"#A1A1A1"}
                         />

@@ -1,12 +1,23 @@
 import { Text, View, Image, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import { useFonts, Raleway_700Bold, Raleway_600SemiBold } from '@expo-google-fonts/raleway'
-import { Nunito_400Regular, Nunito_700Bold, Nunito_600SemiBold } from "@expo-google-fonts/nunito"
+import { 
+    useFonts, 
+    Raleway_700Bold, 
+    Raleway_600SemiBold 
+} from '@expo-google-fonts/raleway'
+import { 
+    Nunito_400Regular,
+    Nunito_700Bold, 
+    Nunito_600SemiBold 
+} from "@expo-google-fonts/nunito"
 import { styles } from '@/styles/login'
 import { commonStyles } from '@/styles/common'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Entypo, FontAwesome, Fontisto, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import axios from 'axios';
+import { SERVER_URI } from '@/utils/uri'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignupScreen() {
     let [fontsLoaded, fontError] = useFonts({
@@ -58,17 +69,30 @@ export default function SignupScreen() {
         }
         else {
             setError({...error, password: ""})
-            setUserSignUp({...userSignUp, password: password})
         }
+        setUserSignUp({...userSignUp, password: password})
     }
 
-    const handleSignup = () => {
+    const handleSignup = async () => {
         setButtonSpinner(true);
-        console.log(userSignUp.email);
-        console.log(userSignUp.password);
-        console.log(userSignUp.role);
-        console.log(userSignUp.username);
-        console.log(userSignUp.displayName);
+        await axios
+            .post(`${SERVER_URI}/api/User`, {
+                userName: userSignUp.username,
+                email: userSignUp.email,
+                dislayName: userSignUp.displayName,
+                password: userSignUp.password,
+                role: userSignUp.role
+            })
+            .then(async (res) => {
+                await AsyncStorage.setItem('userInfo', userSignUp.username);
+                setButtonSpinner(false);
+                router.push("/(routes)/auth/signin");
+            })
+            .catch((err) => {
+                setButtonSpinner(false);
+                alert("Email is already exist!");
+                console.log(err.message, `${SERVER_URI}/api/User`);
+            })
     }
 
     const handleStudentPress = () => {

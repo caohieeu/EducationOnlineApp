@@ -20,4 +20,4 @@ export const onboardingSwiperData = [
         sortDescription: "your curiosity & enjoyable.",
         image: "ss"
     }
-]
+]  

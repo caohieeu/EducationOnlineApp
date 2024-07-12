@@ -5,11 +5,27 @@ import {
 } from 'react-native-responsive-screen'
 
 export const commonStyles = StyleSheet.create({
+    containerCenter: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems:"center"
+    },
     buttonContainer: {
         backgroundColor: "#2865e3",
         width: "100%",
         paddingVertical: 18,
         borderRadius: 8,
+    },
+    buttonText: {
+        color: "white",
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily: "Raleway_700Bold"
+    },
+    buttonText_2: {
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily: "Raleway_700Bold"
     },
     inputContainer: {
         marginTop: 30,
@@ -48,5 +64,10 @@ export const commonStyles = StyleSheet.create({
     },
     activeCheckbox: {
         backgroundColor: "#06b6d4" + "11"
-    }
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+    },
 })
