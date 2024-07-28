@@ -69,7 +69,7 @@ export default function FollowerScreen() {
               fontFamily: "Nunito_600SemiBold",
               fontSize: 20,
             }}>
-              Follower
+              Người theo dõi
             </Text>
           </View>
 
@@ -94,10 +94,10 @@ export default function FollowerScreen() {
                 />
                 <Text style={{
                     justifyContent: "center",
-                    fontSize: 25,
+                    fontSize: 23,
                     opacity: 0.6
                     }}>
-                        There are no follower
+                        Không ai theo dõi
                     </Text>
                 </View>
             </View>

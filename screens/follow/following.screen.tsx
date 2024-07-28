@@ -67,7 +67,7 @@ import useFollowing from '@/hooks/useFollowing';
                 fontFamily: "Nunito_600SemiBold",
                 fontSize: 20,
               }}>
-                Following
+                Đang theo dõi
               </Text>
             </View>
   
@@ -92,10 +92,10 @@ import useFollowing from '@/hooks/useFollowing';
                         />
                         <Text style={{
                             justifyContent: "center",
-                            fontSize: 25,
+                            fontSize: 20,
                             opacity: 0.6
                             }}>
-                                There are no following
+                                Không có người đang theo dõi
                             </Text>
                         </View>
                     </View>

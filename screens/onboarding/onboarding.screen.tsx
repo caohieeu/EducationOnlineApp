@@ -29,15 +29,15 @@ export default function OnBoardingScreen() {
                 </View>
                 <View style={styles.titleWrapper}>
                     <Text style={[styles.titleText, {fontFamily: "Raleway_700Bold"}]}>
-                        Start Learning With Education Online
+                        Bắt đầu học tập với Education Online
                     </Text>
                 </View>
                 <View style={styles.dscpWrapper}>
                     <Text style={[styles.dscpText, {fontFamily: "Nunito_400Regular"}]}>
-                        Explore all classes and lessons livestreamed  
+                        Khám phá các video học tập được phát trực tiếp    
                     </Text>
                     <Text style={[styles.dscpText, {fontFamily: "Nunito_400Regular"}]}>
-                        by instructors
+                        đến từ giảng viên
                     </Text>
                 </View>
                 <TouchableOpacity 
@@ -46,7 +46,7 @@ export default function OnBoardingScreen() {
                 onPress={() => router.push("/(routes)/auth/signin")}
                 >
                     <Text style={[styles.buttonText, {fontFamily: "Nunito_400Regular"}]}>
-                        Getting Started
+                        Bắt đầu
                     </Text>
                 </TouchableOpacity>
             </View>

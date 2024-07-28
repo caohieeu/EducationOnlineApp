@@ -18,6 +18,7 @@ import { router } from 'expo-router'
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'react-native-toast-notifications'
 
 export default function SignupScreen() {
     let [fontsLoaded, fontError] = useFonts({
@@ -27,21 +28,30 @@ export default function SignupScreen() {
         Raleway_600SemiBold,
         Nunito_600SemiBold
     })
+    const User = {
+        username: '',
+        email: '',
+        displayName: '',
+        password: '',
+        role: ''
+    };
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [buttonSpinner, setButtonSpinner] = useState(false);
-    const [userSignUp, setUserSignUp] = useState({
-        email: "",
-        username: "",
-        displayName: "",
-        password: "",
-        role: ""
-    })
+    const [userSignUp, setUserSignUp] = useState(User);
+    const requiredFields: (keyof UserSignup)[] = ['userName', 'email', 'displayName', 'password', 'role'];
     const [required, setRequired] = useState("");
     const [error, setError] = useState({
         password: ""
     })
     const [isCheckStudent, setIsCheckStudent] = useState(false);
     const [isCheckTeacher, setIsCheckTeacher] = useState(false);
+
+    const isObjectValid = (obj:UserSignup):boolean => {
+        return requiredFields.every(field => 
+            obj.hasOwnProperty(field) &&
+            obj[field] !== ""
+        )
+    }
 
     const handlePasswordValidation = (value:string) => {
         const password = value;
@@ -52,19 +62,19 @@ export default function SignupScreen() {
         if(!passwordSpecialCharacter.test(password)) {
             setError({
                 ...error,
-                password: "Write at least one special character"
+                password: "Có ít nhất 1 ký tự đặc biệt"
             })
         }
         else if(!passwordOneNumber.test(password)) {
             setError({
                 ...error,
-                password: "Write at least one number"
+                password: "Có ít nhất 1 chữ số"
             })
         }
         else if(!passwordSixValue.test(password)) {
             setError({
                 ...error,
-                password: "Write at least 6 characters"
+                password: "Có ít nhất 6 ký tự"
             })
         }
         else {
@@ -75,14 +85,16 @@ export default function SignupScreen() {
 
     const handleSignup = async () => {
         setButtonSpinner(true);
-        await axios
-            .post(`${SERVER_URI}/api/User`, {
-                userName: userSignUp.username,
-                email: userSignUp.email,
-                dislayName: userSignUp.displayName,
-                password: userSignUp.password,
-                role: userSignUp.role
-            })
+        const userObject: UserSignup = {
+            userName: userSignUp.username,
+            email: userSignUp.email,
+            displayName: userSignUp.displayName,
+            password: userSignUp.password,
+            role: userSignUp.role
+        };
+        if(isObjectValid(userObject)) {
+            await axios
+            .post(`${SERVER_URI}/api/User`, userObject)
             .then(async (res) => {
                 await AsyncStorage.setItem('userInfo', userSignUp.username);
                 setButtonSpinner(false);
@@ -90,9 +102,19 @@ export default function SignupScreen() {
             })
             .catch((err) => {
                 setButtonSpinner(false);
-                alert("Email is already exist!");
-                console.log(err.message, `${SERVER_URI}/api/User`);
+                Toast.show(err.response.data, {
+                    type: "danger",
+                    duration: 1400
+                });
             })
+        }
+        else {
+            Toast.show("Vui lòng nhập đầy đủ trường!", {
+                type: "warning",
+                duration: 1400
+            });
+            setButtonSpinner(false);
+        }
     }
 
     const handleStudentPress = () => {
@@ -114,10 +136,10 @@ export default function SignupScreen() {
                     source={require("@/assets/images/header-image.png")}
                     style={styles.siginImage} />
                 <Text style={[styles.welcomeText, {fontFamily: "Raleway_700Bold"}]}>
-                    Let's get started!
+                    Đăng ký
                 </Text>
                 <Text style={styles.learningText}>
-                    Create an account to Education Online to get all features
+                    Tạo tài khoản để sử dụng tất cả tính năng
                 </Text>
                 <View style={commonStyles.inputContainer}>
                     <View style={{paddingBottom: 10}}>
@@ -126,7 +148,7 @@ export default function SignupScreen() {
                                 style={[commonStyles.input, {paddingLeft: 45}]}
                                 keyboardType="default"
                                 value={userSignUp.username}
-                                placeholder="Username"
+                                placeholder="Tên đăng nhập"
                                 onChangeText={(value) => setUserSignUp({...userSignUp, username:value})}
                             />
                             <Fontisto 
@@ -141,7 +163,7 @@ export default function SignupScreen() {
                                 style={[commonStyles.input, {paddingLeft: 45}]}
                                 keyboardType="default"
                                 value={userSignUp.displayName}
-                                placeholder="Display name"
+                                placeholder="Tên hiển thị"
                                 onChangeText={(value) => setUserSignUp({...userSignUp, displayName:value})}
                             />
                             <FontAwesome 
@@ -177,7 +199,7 @@ export default function SignupScreen() {
                                 keyboardType="default"
                                 secureTextEntry={!isPasswordVisible}
                                 defaultValue=""
-                                placeholder="********"
+                                placeholder="Mật khẩu"
                                 onChangeText={handlePasswordValidation}
                             />
                             <TouchableOpacity
@@ -270,7 +292,7 @@ export default function SignupScreen() {
                                         fontFamily: "Raleway_700Bold"
                                     }}
                                 >
-                                    Sign Up
+                                    Đăng ký
                                 </Text>
                             )
                         }
@@ -288,7 +310,7 @@ export default function SignupScreen() {
                 </View>
                 <View style={styles.signUpRedirect}>
                     <Text style={{fontSize: 18, fontFamily: "Raleway_600SemiBold"}}>
-                        Already have an account?
+                        Đã có tài khoản?
                     </Text>
                     <TouchableOpacity
                         onPress={() => router.push("/(routes)/auth/signin")}
@@ -301,7 +323,7 @@ export default function SignupScreen() {
                                 marginLeft: 5
                             }}
                         >
-                            Sign in
+                            Đăng nhập
                         </Text>
                     </TouchableOpacity>
                 </View>

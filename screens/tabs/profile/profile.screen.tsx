@@ -50,7 +50,7 @@ export default function ProfileScreen() {
                 return;
             }
         })
-    }, [follower, userInfo, currentUser])
+    }, [follower, userInfo])
 
     if(!fontsLoaded && !fontError) {
         return null;
@@ -186,7 +186,7 @@ export default function ProfileScreen() {
                             <Text style={{
                                 fontFamily: "Nunito_600SemiBold",
                                 color: "#575757"
-                            }}>Following</Text>
+                            }}>Đang theo dõi</Text>
                         </TouchableOpacity>
                         
                         <TouchableOpacity 
@@ -207,7 +207,7 @@ export default function ProfileScreen() {
                             <Text style={{
                                 fontFamily: "Nunito_600SemiBold",
                                 color: "#575757"
-                            }}>Follower</Text>
+                            }}>Người theo dõi</Text>
                         </TouchableOpacity>
                     </View>
                     {currentUser?.userName == userInfo?.userName ? (
@@ -220,7 +220,7 @@ export default function ProfileScreen() {
                             marginBottom: 16, 
                             fontFamily: "Raleway_700Bold"
                         }}>
-                            Account Details
+                            Chi tiết tài khoản
                         </Text>
                         <TouchableOpacity
                             onPress={() => {
@@ -260,12 +260,12 @@ export default function ProfileScreen() {
                                     <Text
                                         style={{fontSize: 16, fontFamily: "Nunito_700Bold"}}
                                     >
-                                        Detail Profile
+                                        Hồ sơ chi tiết
                                     </Text>
                                     <Text
                                         style={{color: "#575757", fontFamily: "Nunito_400Regular"}}
                                     >
-                                        Information Account
+                                        Thông tin tài khoản
                                     </Text>
                                 </View>
                             </View>
@@ -359,7 +359,7 @@ export default function ProfileScreen() {
                                     <Text
                                         style={{fontSize: 16, fontFamily: "Nunito_700Bold"}}
                                     >
-                                        Log out
+                                        Đăng xuất
                                     </Text>
                                 </View>
                             </View>
@@ -379,11 +379,12 @@ export default function ProfileScreen() {
                                     marginTop: 20,
                                     paddingVertical: 13,
                                     borderRadius: 8,
-                                    marginHorizontal: 160,
+                                    marginHorizontal: 154,
                                     borderWidth: 1,
+
                                 }}
                             >
-                                <Text style={commonStyles.buttonText_2}>Following</Text>
+                                <Text style={commonStyles.buttonText_2}>Đang theo dõi</Text>
                             </TouchableOpacity>
                             ) : (
                             <TouchableOpacity
@@ -396,7 +397,7 @@ export default function ProfileScreen() {
                                     marginHorizontal: 160
                                 }}
                             >
-                                <Text style={commonStyles.buttonText}>Follow</Text>
+                                <Text style={commonStyles.buttonText}>Theo dõi</Text>
                             </TouchableOpacity>
                             )}
                         </View>

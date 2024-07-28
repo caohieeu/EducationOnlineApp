@@ -33,7 +33,6 @@ export const commonStyles = StyleSheet.create({
     },
     input: {
         height: 55,
-        //marginHorizontal: 16,
         borderRadius: 8,
         paddingLeft: 35,
         fontSize: 16,

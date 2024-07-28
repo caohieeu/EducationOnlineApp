@@ -22,6 +22,14 @@ type User = {
 }
 }
 
+type UserSignup = {
+    userName: string;
+    email: string;
+    displayName: string;
+    password: string;
+    role: string;
+}
+
 type InfoUser = {
     id: string,
     userName: string,
@@ -44,4 +52,13 @@ type Follow = {
         user_avatar: String
     },
     followDate: Date
+}
+
+interface VideoUpload {
+    title: string,
+    description: string,
+    image_url: string,
+    video_size: string,
+    video_status: string,
+    tags: string[]
 }

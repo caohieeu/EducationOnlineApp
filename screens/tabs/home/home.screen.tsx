@@ -7,7 +7,7 @@ import { router } from 'expo-router'
 import { commonStyles } from '@/styles/common'
 
 export default function HomeScreen() {
-    const { user } = useUser();
+    //const { user } = useUser();
 
     useEffect(() => {
     }, [])
@@ -15,7 +15,7 @@ export default function HomeScreen() {
     return (
     <View style={[commonStyles.containerCenter]}>
         <Text>Welcome!</Text>
-        <Text>{user?.dislayName}</Text>
+        <Text>{"Hello"}</Text>
     </View>
     )
 }

@@ -40,19 +40,19 @@ export default function SigninScreen() {
         if(!passwordSpecialCharacter.test(password)) {
             setError({
                 ...error,
-                password: "Write at least one special character"
+                password: "Có ít nhất 1 ký tự đặc biệt"
             })
         }
         else if(!passwordOneNumber.test(password)) {
             setError({
                 ...error,
-                password: "Write at least one number"
+                password: "Có ít nhất 1 chữ số"
             })
         }
         else if(!passwordSixValue.test(password)) {
             setError({
                 ...error,
-                password: "Write at least 6 characters"
+                password: "Có ít nhất 6 ký tự"
             })
         }
         else {
@@ -78,7 +78,7 @@ export default function SigninScreen() {
             })
             .catch((err) => {
                 setButtonSpinner(false);
-                Toast.show("Wrong username or password!", {
+                Toast.show("Sai tài khoản hoặc mật khẩu!", {
                     type: "danger",
                     duration: 1400
                 });
@@ -88,7 +88,7 @@ export default function SigninScreen() {
 
     var validateInput = (usernameField:string, passwordField:string) => {
         if(usernameField.trim().length === 0 || passwordField.trim().length === 0) {
-            Toast.show("Please enter username and password!", {
+            Toast.show("Vui lòng nhập tên đăng nhập và mật khẩu!", {
                 type: "warning",
                 duration: 1400
             })
@@ -105,10 +105,10 @@ export default function SigninScreen() {
                     source={require("@/assets/images/header-image.png")}
                     style={styles.siginImage} />
                 <Text style={[styles.welcomeText, {fontFamily: "Raleway_700Bold"}]}>
-                    Welcome Back!
+                    Đăng nhập
                 </Text>
                 <Text style={styles.learningText}>
-                    Login to your existing account of Education Online
+                    Đăng nhập tài khoản của bạn trong Education Online
                 </Text>
                 <View style={commonStyles.inputContainer}>
                     <View style={{paddingBottom: 10}}>
@@ -116,7 +116,7 @@ export default function SigninScreen() {
                             style={[commonStyles.input, {paddingLeft: 45}]}
                             keyboardType="default"
                             value={userInfo.username}
-                            placeholder="Username"
+                            placeholder="Tên đăng nhập"
                             onChangeText={(value) => setUserInfo({...userInfo, username:value})}
                         />
                         <Fontisto 
@@ -136,7 +136,7 @@ export default function SigninScreen() {
                                 keyboardType="default"
                                 secureTextEntry={!isPasswordVisible}
                                 defaultValue=""
-                                placeholder="********"
+                                placeholder="Mật khẩu"
                                 onChangeText={handlePasswordValidation}
                             />
                             <TouchableOpacity
@@ -180,7 +180,7 @@ export default function SigninScreen() {
                         <Text
                             style={[styles.forgotSection, {fontFamily: "Nunito_600SemiBold"}]}
                         >
-                            Forgot Password?
+                            Quên mật khẩu?
                         </Text>
                     </TouchableOpacity>
 
@@ -200,7 +200,7 @@ export default function SigninScreen() {
                                         fontFamily: "Raleway_700Bold"
                                     }}
                                 >
-                                    Sign In
+                                    Đăng nhập
                                 </Text>
                             )
                         }
@@ -218,7 +218,7 @@ export default function SigninScreen() {
                 </View>
                 <View style={styles.signUpRedirect}>
                     <Text style={{fontSize: 18, fontFamily: "Raleway_600SemiBold"}}>
-                        Don't have an account?
+                        Không có tài khoản?
                     </Text>
                     <TouchableOpacity
                         onPress={() => router.push("/(routes)/auth/signup")}
@@ -231,7 +231,7 @@ export default function SigninScreen() {
                                 marginLeft: 5
                             }}
                         >
-                            Sign up
+                            Đăng ký
                         </Text>
                     </TouchableOpacity>
                 </View>
