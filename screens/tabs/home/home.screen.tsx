@@ -1,21 +1,36 @@
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { Button, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Toast } from 'react-native-toast-notifications'
-import useUser from '@/hooks/useUser'
-import { router } from 'expo-router'
+import { LinearGradient } from 'expo-linear-gradient'
+import Header from '@/components/Header'
 import { commonStyles } from '@/styles/common'
+import SearchInput from '@/components/SearchInput'
+import HomeBarSlider from '@/components/HomeBarSlider'
+import AllCourse from '@/components/AllCourse'
+import useUser from '@/hooks/useUser'
+import Loader from '@/loader/loader'
+import VideoUpload from '@/components/VideoUpload'
 
 export default function HomeScreen() {
-    //const { user } = useUser();
-
-    useEffect(() => {
-    }, [])
+    const { user, loading } = useUser();
 
     return (
-    <View style={[commonStyles.containerCenter]}>
-        <Text>Welcome!</Text>
-        <Text>{"Hello"}</Text>
-    </View>
+        <>
+            {loading ? (
+                <Loader />
+            ) : (
+                <LinearGradient
+                    colors={["#E5ECF9", "#F6F7F9"]}
+                    style={{ flex: 1, paddingTop: 50 }}
+                >
+                    <Header />
+                    <ScrollView>
+                        <SearchInput />
+                        <HomeBarSlider />
+                        <AllCourse />
+                        <VideoUpload />
+                    </ScrollView>
+                </LinearGradient>
+            )}
+        </>
     )
 }

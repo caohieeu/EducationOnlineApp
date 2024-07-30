@@ -20,4 +20,19 @@ export const onboardingSwiperData = [
         sortDescription: "your curiosity & enjoyable.",
         image: "ss"
     }
-]  
+];
+
+export const bannerData: BannerDataTypes[] = [
+    {
+      bannerImageUrl: require("@/assets/banner/1.jpg"),
+    },
+    {
+      bannerImageUrl: require("@/assets/banner/2.webp"),
+    },
+    {
+      bannerImageUrl: require("@/assets/banner/3.webp"),
+    },
+    {
+      bannerImageUrl: require("@/assets/banner/4.webp"),
+    },
+  ];

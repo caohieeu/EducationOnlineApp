@@ -60,5 +60,10 @@ interface VideoUpload {
     image_url: string,
     video_size: string,
     video_status: string,
+    file_type: string,
     tags: string[]
 }
+
+type BannerDataTypes = {
+    bannerImageUrl: any;
+  };

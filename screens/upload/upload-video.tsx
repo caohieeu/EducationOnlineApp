@@ -54,6 +54,7 @@ export default function UploadVideo() {
     description: "",
     image_url: "",
     video_size: "",
+    file_type: "",
     video_status: "public",
     tags: []
   })
@@ -75,24 +76,29 @@ export default function UploadVideo() {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 1,
+        base64: true
     });
 
     if(!result.canceled) {
       setLoadingImage(true);
+      const uriParts = result.assets[0].uri.split('/');
+      const fileName = uriParts[uriParts.length - 1];
+      const fileType = `image/${fileName.split('.').pop()}`;
       const formData = new FormData();
-      // const response = await fetch(result.assets[0].uri);
-      // const blob = await response.blob();
-      // const base64 = await FileSystem.readAsStringAsync(response, {
-      //   encoding: FileSystem.EncodingType.Base64});
-      formData.append('file', JSON.stringify(result));
-      await axios.post("https://minhduc-stag.wehatech.com/upload/image", formData, {
+      formData.append('file', {
+        uri: result.assets[0].uri,
+        name: fileName,
+        type: fileType,
+      });
+      await axios.post("https://api.microlap.vn/upload/image", formData, {
         headers: {  
           'Content-Type': 'multipart/form-data',
         }
       })
       .then((res) => {
-        console.log(res);
-        setImage("");
+        console.log(res.data.data.image_url);
+        setImage(res.data.data.image_url);
+        setVideoUpload({...videoUpload, image_url: res.data.data.image_url});
         setLoadingImage(false);
       })
       .catch((err) => {
@@ -125,7 +131,6 @@ export default function UploadVideo() {
 
   const uploadToAws = async (preSignedUrl:string, videoId:string) => {
     try {
-      let formData = new FormData();
       if(video) {
         const base64 = await FileSystem.readAsStringAsync(video, {
           encoding: FileSystem.EncodingType.Base64});
@@ -164,7 +169,7 @@ export default function UploadVideo() {
             description: videoUpload.description,
             image_url: videoUpload.image_url,
             video_size: videoUpload.video_size,
-            file_type: videoUpload.video_status,
+            file_type: videoUpload.file_type,
             tags: videoUpload.tags
           },
           {
@@ -189,10 +194,10 @@ export default function UploadVideo() {
       try {
         const info_video_storage = await AsyncStorage.getItem("info_video");
         const infor_video = JSON.parse(info_video_storage!);
-        console.log(infor_video);
         setVideo(infor_video.uri);
         setContentType(infor_video.mimeType);
         setVideoUpload({...videoUpload, video_size: infor_video.fileSize})
+        setVideoUpload({...videoUpload, file_type: infor_video.type})
       } catch (err) {
         console.log("Error: " + err);
       }
@@ -272,7 +277,7 @@ export default function UploadVideo() {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={{
-              fontFamily: "Raleway_700Bold",
+              fontFamily: "Nunito_600SemiBold",
               fontSize: 20
             }}>
               Chế độ hiển thị
@@ -401,7 +406,9 @@ export default function UploadVideo() {
             <>
               {loadingImage ? (
                 <ActivityIndicator
-                style={styles.video}
+                  size={'large'}
+                  color={"#2865e3"}
+                  style={styles.video}
                 />
               ) : (
                 <Image 
@@ -445,12 +452,14 @@ export default function UploadVideo() {
               }
               style={{
                 paddingLeft: 55,
+                paddingRight: 25,
                 height: 55,
                 minHeight: 70,
                 borderWidth: 1,
                 borderColor: "#757575",
                 fontSize: 23,
-                fontWeight: "semibold"
+                fontWeight: "semibold",
+                fontFamily: "Nunito_600SemiBold"
               }}
               keyboardType="default"
               placeholder="Tiêu đề"
@@ -482,10 +491,13 @@ export default function UploadVideo() {
                   height: 55,
                   fontSize: 20,
                   alignItems: "center",
-                  paddingVertical: 15
+                  paddingVertical: 15,
+                  fontFamily: "Nunito_600SemiBold"
                 }}
               >
                 {videoUpload.description.length > 0 ? 
+                  videoUpload.description.length > 27 ? 
+                  videoUpload.description.substring(0, 27) + "..." :
                   videoUpload.description :
                   "Thêm mô tả"
                 }
@@ -526,6 +538,7 @@ export default function UploadVideo() {
                     paddingVertical: 15,
                     lineHeight: 15,
                     marginRight: 10,
+                    fontFamily: "Nunito_600SemiBold"
                   }}
                 >
                   {
@@ -557,6 +570,7 @@ export default function UploadVideo() {
           style={{
             width: "100%",
             fontSize: 20,
+            fontFamily: "Nunito_600SemiBold"
           }}
           placeholder="Thêm tag..."
           onChangeText={handleTextChange}
