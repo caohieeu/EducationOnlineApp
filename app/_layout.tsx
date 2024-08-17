@@ -44,6 +44,8 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/follow/following" />
         <Stack.Screen name="(routes)/profile-other" />
         <Stack.Screen name="(routes)/upload/upload-video" />
+        <Stack.Screen name="(routes)/upload/upload-course" />
+        <Stack.Screen name="(routes)/upload/upload-video-course" />
       </Stack>
     </ToastProvider>
   )}</>;

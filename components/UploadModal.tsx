@@ -18,7 +18,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ visible, onClose }) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Videos,
             base64: true,
-            allowsEditing: true,
             quality: 1,
         });
     
@@ -112,7 +111,10 @@ const UploadModal: React.FC<UploadModalProps> = ({ visible, onClose }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => console.log("")}
+                            onPress={() => {
+                                onClose();
+                                router.push("(routes)/upload/upload-course")
+                            }}
                             style={{
                                 marginBottom: 15
                             }}

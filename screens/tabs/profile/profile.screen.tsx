@@ -36,88 +36,94 @@ export default function ProfileScreen() {
     })
     const { userInfo } = useInfoUser();
     const { follower } = useFollower(userId);
-    const { following  } = useFollowing(userId);
+    const { following, refreshFollowing } = useFollowing(userId);
     const { currentUser, loading } = useCurrentUser(userId);
-    const [followedId, setFollowId] = useState();
-    const [followerId, setFollowerId] = useState();
     const [isFollow, setIsFollow] = useState(false);
 
     useEffect(() => {
-        follower?.map((item) => {
-            if((item.follower.user_id == userInfo?.id) && 
-            (item.followed.user_id == currentUser?.id)) {
-                setIsFollow(true);
-                return;
-            }
-        })
-    }, [follower, userInfo])
+        const isUserFollowed = follower?.some(
+            (item) =>
+                item.follower.user_id === userInfo?.id &&
+                item.followed.user_id === currentUser?.id
+        );
+        setIsFollow(!!isUserFollowed);
+    }, [follower, userInfo]);
 
-    if(!fontsLoaded && !fontError) {
+    if (!fontsLoaded && !fontError) {
         return null;
     }
-    
-    const logoutHandler = () => {
-        AsyncStorage.multiRemove(["access_token", "user_id"]);
-        router.push("/(routes)/auth/signin")
-    }
+
+    const logoutHandler = async () => {
+        try {
+            await AsyncStorage.multiRemove(["access_token", "user_id"]);
+        }
+        catch {
+            Toast.show("Đăng xuất lỗi", {
+                type: 'error',
+                duration: 1400,
+            });
+        }
+        finally {
+            router.push('/(routes)/auth/signin');
+        }
+    };
 
     const onFollow = async () => {
-        await axios.post(
-            `${SERVER_URI}/api/Follow/PostFollow`,
-            {
+        try {
+            await axios.post(`${SERVER_URI}/api/Follow/PostFollow`, {
                 followed: {
-                  user_id: currentUser?.id,
-                  user_display_name: currentUser?.dislayName,
-                  user_avatar: currentUser?.avatarUrl
+                    user_id: currentUser?.id,
+                    user_display_name: currentUser?.dislayName,
+                    user_avatar: currentUser?.avatarUrl,
                 },
                 follower: {
-                  user_id: userInfo?.id,
-                  user_display_name: userInfo?.dislayName,
-                  user_avatar: userInfo?.avatarUrl
-                }
-              }
-        )
-        .then((res:any) => {
-            Toast.show("Follow successed", {
-                type:"success",
-                duration: 1400
-            })
-            setIsFollow(!isFollow);
-        })
-        .catch((error:any) => {
-            console.log("Error when post follow: " + error);
-        })
-    }
-    
-    const findIdFollow = () => {
-        const foundItem = follower?.find((item) => 
-            item.follower.user_id == userInfo?.id && 
-            item.followed.user_id == currentUser?.id
-        );
-        if(foundItem) {
+                    user_id: userInfo?.id,
+                    user_display_name: userInfo?.dislayName,
+                    user_avatar: userInfo?.avatarUrl,
+                },
+            });
+
+            Toast.show('Follow succeeded', {
+                type: 'success',
+                duration: 1400,
+            });
             setIsFollow(true);
-            console.log("id: " + foundItem.id);
-            return foundItem.id;
+            refreshFollowing();
+        } catch (error) {
+            console.error('Error when posting follow:', error);
+            Toast.show('Error while following', {
+                type: 'danger',
+                duration: 1400,
+            });
         }
-    }
+    };
 
     const onUnFollow = async () => {
-        const id = findIdFollow();
-        console.log(`${SERVER_URI}/api/Follow/RemoveFollow/${id}`);
-        await axios.delete(
-            `${SERVER_URI}/api/Follow/RemoveFollow/${id}`
-        )
-        .then((res:any) => {
-            Toast.show("Un follow successed", {
-                type:"success",
-                duration: 1400
-            })
-            setIsFollow(!isFollow);
-        })
-        .catch((error:any) => {
-            console.log("Error when post follow: " + error);
-        })
-    }
+        try {
+            const followId = follower?.find(
+                (item) =>
+                    item.follower.user_id === userInfo?.id &&
+                    item.followed.user_id === currentUser?.id
+            )?.id;
+
+            if (followId) {
+                await axios.delete(`${SERVER_URI}/api/Follow/RemoveFollow/${followId}`);
+
+                Toast.show('Unfollow succeeded', {
+                    type: 'success',
+                    duration: 1400,
+                });
+                setIsFollow(false);
+                refreshFollowing();
+            }
+        } catch (error) {
+            console.error('Error when removing follow:', error);
+            Toast.show('Error while unfollowing', {
+                type: 'danger',
+                duration: 1400,
+            });
+        }
+    };
 
     return (
         <>

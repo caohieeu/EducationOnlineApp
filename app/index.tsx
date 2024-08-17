@@ -1,21 +1,27 @@
 import useUser from "@/hooks/useUser";
 import { Redirect } from "expo-router";
 import Loader from "@/loader/loader";
-
-if (__DEV__) {
-    require("@/ReactotronConfig");
-  }
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TabsIndex() {
     const { loading, user } = useUser();
-        
+    
+    useEffect(() => {
+        const func = async () => {
+            const token = await AsyncStorage.getItem("access_token");
+            console.log(token);
+        }
+        func();
+    }, [])
+
     return (
         <>
             {
-                false ? (
+                loading ? (
                     <Loader />
                 ) : (
-                    <Redirect href={!user ? "/(routes)/onboarding" : "/(tabs)"} />
+                    <Redirect href={user == null ? "/(routes)/onboarding" : "/(tabs)"} />
                 )
             }
         </>

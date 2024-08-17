@@ -11,7 +11,6 @@ import {
     Nunito_700Bold, 
     Nunito_600SemiBold 
   } from "@expo-google-fonts/nunito"
-import { commonStyles } from '@/styles/common'
 import useUser from '@/hooks/useUser'
 import { Feather } from '@expo/vector-icons'
 

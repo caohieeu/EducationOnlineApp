@@ -19,10 +19,10 @@ export default function useFollower(otherUserId:any) {
         }
 
         await axios.get(
-            `${SERVER_URI}/api/Follow/GetFollower/${currentUser}?page=1`
+            `${SERVER_URI}/api/Follow/GetFollower/${currentUser}?page=1&pageSize=26`
         )
         .then((res:any) => {
-            setFollower(res.data);
+            setFollower(res.data.data);
             setLoading(false);
         })
         .catch((error:any) => {

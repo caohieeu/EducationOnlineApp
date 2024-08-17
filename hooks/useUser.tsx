@@ -15,6 +15,11 @@ export default function useUser() {
         const subscription = async () => {
             const token = await AsyncStorage.getItem("access_token");
 
+            if(token == null) {
+                setLoading(false);
+                return;
+            }
+
             await axios
                 .get(`${SERVER_URI}/api/User`, {
                     headers: {

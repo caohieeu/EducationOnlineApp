@@ -15,9 +15,9 @@ export default function useCourses(page:number) {
             const token = await AsyncStorage.getItem("access_token");
 
             await axios
-                .get(`${SERVER_URI}/api/Video/${page}`)
+                .get(`${SERVER_URI}/api/Video?page=${page}&pageSize=6`)
                 .then((res:any) => {
-                    setVideoCourses(res.data);
+                    setVideoCourses(res.data.data);
                     setLoading(false);
                 })
                 .catch((error:any) => {

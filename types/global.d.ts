@@ -64,6 +64,41 @@ interface VideoUpload {
     tags: string[]
 }
 
+interface VideoUploadCourse {
+    title: string,
+    description: string,
+    image_url: string,
+    video_size: number,
+    status: number,
+    file_type: string,
+    tags: string[]
+}
+
+interface VideoCourse {
+    id: string,
+    user_id: string,
+    time: Date
+    title: string,
+    description: string,
+    view: number,
+    like: number,
+    thumbnail: string,
+    status: string,
+    statusNum: number,
+    videoUrl: string,
+    fileType: string,
+    tags: string[]
+}
+
 type BannerDataTypes = {
     bannerImageUrl: any;
-  };
+};
+
+interface CourseUpload {
+    title: string,
+    desc: string,
+    courseDetail: string,
+    price: number,
+    tags: string[],
+    discount: number
+}

@@ -4,7 +4,7 @@ import {
   ActivityIndicator
 } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { Video, ResizeMode } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { commonStyles } from '@/styles/common';
@@ -21,11 +21,8 @@ import {
 } from "@expo-google-fonts/nunito"
 import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
-import { tapHandlerName } from 'react-native-gesture-handler/lib/typescript/handlers/TapGestureHandler';
-import { error } from 'console';
 import { Toast } from 'react-native-toast-notifications';
 import * as FileSystem from "expo-file-system";
 import {Buffer} from "buffer";
@@ -76,7 +73,7 @@ export default function UploadVideo() {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 1,
-        base64: true
+        base64: true,
     });
 
     if(!result.canceled) {
@@ -108,7 +105,7 @@ export default function UploadVideo() {
       })
     }
     else {
-        alert('You did not select any image');
+        alert('Bạn chưa chọn hình ảnh nào');
     }
   };
 
@@ -146,6 +143,7 @@ export default function UploadVideo() {
             type: "success",
             duration: 1400
           })
+          router.push("/(tabs)")
         })
         .catch(async (res) => {
           await axios.delete(`${SERVER_URI}/api/Video/deleteVideo/${videoId}?uploaded=false`);

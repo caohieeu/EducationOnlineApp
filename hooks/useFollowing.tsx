@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,32 +7,36 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function useFollowing(otherUserId:any) {
     const [loading, setLoading] = useState(true);
     const [following, setFollowing] = useState<Follow[]>();
+    const [trigger, setTrigger] = useState(false);
 
-    const fetchFollowing = async () => {
-        var currentUser = null;
-        if(otherUserId == undefined) {
+    const fetchFollowing = useCallback(async () => {
+        setLoading(true);
+
+        let currentUser = otherUserId;
+
+        if (currentUser === undefined) {
             currentUser = await AsyncStorage.getItem("user_id");
         }
-        else {
-            currentUser = otherUserId;
-        }
 
-        await axios.get(
-            `${SERVER_URI}/api/Follow/GetFollowing/${currentUser}?page=1`
-        )
-        .then((res:any) => {
-            setFollowing(res.data);
-            setLoading(false);
-        })
-        .catch((error:any) => {
+        try {
+            const res = await axios.get(
+                `${SERVER_URI}/api/Follow/GetFollowing/${currentUser}?page=1&pageSize=26`
+            );
+            setFollowing(res.data.data);
+        } catch (error) {
             console.log(error);
+        } finally {
             setLoading(false);
-        })
-    }
+        }
+    }, [otherUserId, trigger]); 
 
     useEffect(() => {
         fetchFollowing();
-    }, [otherUserId ,loading, following])
+    }, [fetchFollowing]);
 
-    return { loading, following }
+    const refreshFollowing = () => {
+        console.log("change");
+    };
+
+    return { loading, following, refreshFollowing }
 }
