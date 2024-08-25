@@ -38,7 +38,7 @@ import { Video, ResizeMode } from 'expo-av';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { commonStyles } from '@/styles/common'
 import * as FileSystem from "expo-file-system";
-import {Buffer} from "buffer";
+import { Buffer } from "buffer";
 
 export default function UploadVideoCourse() {
   const { courseId } = useLocalSearchParams();
@@ -89,19 +89,19 @@ export default function UploadVideoCourse() {
   const [animation] = useState(new Animated.Value(0));
   const defaultImage = "https://imexpert.au/wp-content/uploads/2023/08/image-not-found.png";
 
-  const handlePublicPress = (pos:number) => {
+  const handlePublicPress = (pos: number) => {
     setIsCheckPublic(!isCheckPublic);
     setIsCheckPrivate(false);
     updateVideoCourse('status', 0, pos)
   }
 
-  const handlePrivatePress = (pos:number) => {
+  const handlePrivatePress = (pos: number) => {
     setIsCheckPrivate(!isCheckPrivate);
     setIsCheckPublic(false);
     updateVideoCourse('status', 1, pos)
   }
 
-  const initVideoUpload = (image: string, video_size:number, file_type:string) => {
+  const initVideoUpload = (image: string, video_size: number, file_type: string) => {
     const newVideos = {
       title: "",
       description: "",
@@ -115,10 +115,10 @@ export default function UploadVideoCourse() {
     setVideoUpload((prevState) => [...prevState, newVideos]);
   };
 
-  const handleTextChange = (inputText:string, pos:number) => {
-    setText((prevState) => 
-      prevState.map((item:any, index) => {
-        if(index === pos) {
+  const handleTextChange = (inputText: string, pos: number) => {
+    setText((prevState) =>
+      prevState.map((item: any, index) => {
+        if (index === pos) {
           return inputText;
         }
         return item;
@@ -128,7 +128,7 @@ export default function UploadVideoCourse() {
     renderTags(inputText, pos);
   };
 
-  const renderTags = (inputText: string, pos:number) => {
+  const renderTags = (inputText: string, pos: number) => {
     const hashtagRegex = /\B#\w*[a-zA-Z]+\w*/g;
     const tags = inputText.match(hashtagRegex);
 
@@ -165,27 +165,26 @@ export default function UploadVideoCourse() {
         if (uri != null) {
           try {
             const uriParts = uri.split('/');
-          const fileName = uriParts[uriParts.length - 1];
-          const fileType1 = `image/${fileName.split('.').pop()}`;
-          const formData = new FormData();
-          formData.append('file', {
-            uri: uri,
-            name: fileName,
-            type: fileType1,
-          });
-          await axios.post("https://api.microlap.vn/upload/image", formData, {
-            headers: {  
-              'Content-Type': 'multipart/form-data',
-            }
-          })
-          .then((res) => {
-            console.log(res.data.data.image_url)
-            initVideoUpload(res.data.data.image_url, videos[i].video_size, videos[i].fileType);
-          })
-          .catch((err) => {
-            initVideoUpload(defaultImage, videos[i].video_size, videos[i].fileType);
-          })
-          } catch(err) {
+            const fileName = uriParts[uriParts.length - 1];
+            const fileType1 = `image/${fileName.split('.').pop()}`;
+            const formData = new FormData();
+            formData.append('file', {
+              uri: uri,
+              name: fileName,
+              type: fileType1,
+            });
+            await axios.post("https://api.microlap.vn/upload/image", formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              }
+            })
+              .then((res) => {
+                initVideoUpload(res.data.data.image_url, videos[i].video_size, videos[i].fileType);
+              })
+              .catch((err) => {
+                initVideoUpload(defaultImage, videos[i].video_size, videos[i].fileType);
+              })
+          } catch (err) {
             console.log(err);
           }
         }
@@ -194,56 +193,54 @@ export default function UploadVideoCourse() {
       }
 
     }
-    console.log(videoUpload);
     setIsLoading(false);
   };
 
-  const uploadToAws = async (preSignedUrl:string, videoId:string, index:number) => {
+  const uploadToAws = async (preSignedUrl: string, videoId: string, index: number) => {
     try {
-        if(videos.length > 0) {
-          const base64 = await FileSystem.readAsStringAsync(videos[index].uri, {
-            encoding: FileSystem.EncodingType.Base64
-          });
-          const buffer = Buffer.from(base64, "base64");
-          await axios.put(preSignedUrl, buffer, {
-            headers: {
-              'Content-Type': 'video/mp4',
-            }
-          })
-          console.log(`Đã tải lên được video thứ ${index}...`)
-          await simulateUpload(videos[index].uri, index, videos.length);
-        }
-    } catch(err) {
+      if (videos.length > 0) {
+        const base64 = await FileSystem.readAsStringAsync(videos[index].uri, {
+          encoding: FileSystem.EncodingType.Base64
+        });
+        const buffer = Buffer.from(base64, "base64");
+        await axios.put(preSignedUrl, buffer, {
+          headers: {
+            'Content-Type': 'video/mp4',
+          }
+        })
+        console.log(`Đã tải lên được video thứ ${index + 1}...`)
+        await simulateUpload(videos[index].uri, index, videos.length);
+      }
+    } catch (err) {
       console.log("Error when upload to aws: " + err);
       await axios.delete(`${SERVER_URI}/api/Course/RemoveVideoFromCourse/${courseId}?videoId=${videoId}?isUploaded=false`);
     }
   }
 
-  const saveVideoCourse = async (preSignedUrl:string, videoId:string, index:number) => {
+  const saveVideoCourse = async (preSignedUrl: string, videoId: string, index: number) => {
     const token = await AsyncStorage.getItem("access_token");
-    console.log(`${SERVER_URI}/api/Course/PutCourseVideo/${courseId}`)
-    if(token != "") {
+    if (token != "") {
       try {
-      await axios
-      .put(`${SERVER_URI}/api/Course/PutCourseVideo/${courseId}`,
-        {
-          _id: videoId,
-          title: videoUpload[index].title,
-          description: videoUpload[index].description,
-          image_url: videoUpload[index].image_url,
-          video_size: videoUpload[index].video_size,
-          file_type: videoUpload[index].file_type,
-          status: videoUpload[index].status,
-          tags: videoUpload[index].tags
-        },
-        {
-          headers: {Cookie: token?.toString()}
-        },
-      )
-      await uploadToAws(preSignedUrl, videoId, index);
-    } catch(err) {
-      console.log("Error when save video course: " + err)
-    }
+        await axios
+          .put(`${SERVER_URI}/api/Course/PutCourseVideo/${courseId}`,
+            {
+              _id: videoId,
+              title: videoUpload[index].title,
+              description: videoUpload[index].description,
+              image_url: videoUpload[index].image_url,
+              video_size: videoUpload[index].video_size,
+              file_type: videoUpload[index].file_type,
+              status: videoUpload[index].status,
+              tags: videoUpload[index].tags
+            },
+            {
+              headers: { Cookie: token?.toString() }
+            },
+          )
+        await uploadToAws(preSignedUrl, videoId, index);
+      } catch (err) {
+        console.log("Error when save video course: " + err)
+      }
     }
   }
 
@@ -253,18 +250,18 @@ export default function UploadVideoCourse() {
     var n = videos.length;
 
     const token = await AsyncStorage.getItem("access_token");
-    if(token != "") {
+    if (token != "") {
       try {
         const response = await axios
-      .get(`${SERVER_URI}/api/Course/GetCoursePresignedUrl?n=${n}`, {
-        headers: {Cookie: token?.toString()}
-      })
+          .get(`${SERVER_URI}/api/Course/GetCoursePresignedUrl?n=${n}`, {
+            headers: { Cookie: token?.toString() }
+          })
 
-      const urls = response.data;
-      for (let index = 0; index < urls.length; index++) {
-        await saveVideoCourse(urls[index].url, urls[index].videoId, index);
-    }
-      } catch(err) {
+        const urls = response.data;
+        for (let index = 0; index < urls.length; index++) {
+          await saveVideoCourse(urls[index].url, urls[index].videoId, index);
+        }
+      } catch (err) {
         console.log(err);
       }
     }
@@ -291,7 +288,7 @@ export default function UploadVideoCourse() {
       });
 
       if (!result.canceled && result.assets) {
-        const formattedVideos : VideoType[] = await Promise.all(result.assets.map(async (asset) => {
+        const formattedVideos: VideoType[] = await Promise.all(result.assets.map(async (asset) => {
           const videoSize: number = asset.fileSize ?? 0;
           const fileType: string = asset.mimeType ?? "video/mp4"
 
@@ -345,15 +342,15 @@ export default function UploadVideoCourse() {
     )
   }
 
-  const pickImage = async (pos:number) => {
+  const pickImage = async (pos: number) => {
     let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-        base64: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+      base64: true,
     });
 
-    if(!result.canceled) {
+    if (!result.canceled) {
       setLoadingImage(true);
       const uriParts = result.assets[0].uri.split('/');
       const fileName = uriParts[uriParts.length - 1];
@@ -365,29 +362,29 @@ export default function UploadVideoCourse() {
         type: fileType,
       });
       await axios.post("https://api.microlap.vn/upload/image", formData, {
-        headers: {  
+        headers: {
           'Content-Type': 'multipart/form-data',
         }
       })
-      .then((res) => {
-        updateVideoCourse('image_url', res.data.data.image_url, pos)
-        setLoadingImage(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        updateVideoCourse(
-          'image_url',
-          defaultImage,
-          pos
-        );
-        setLoadingImage(false);
-      })
+        .then((res) => {
+          updateVideoCourse('image_url', res.data.data.image_url, pos)
+          setLoadingImage(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          updateVideoCourse(
+            'image_url',
+            defaultImage,
+            pos
+          );
+          setLoadingImage(false);
+        })
     }
     else {
-        alert('Bạn chưa chọn hình ảnh nào');
+      alert('Bạn chưa chọn hình ảnh nào');
     }
   };
-  
+
   return (
     <LinearGradient
       colors={["#E5ECF9", "#F6F7F9"]}
@@ -484,32 +481,32 @@ export default function UploadVideoCourse() {
                       source={{ uri: item?.image_url }}
                       style={styles.video}
                     />
-                    <TouchableOpacity 
-            onPress={() => pickImage(index)}
-            style={{
-              position: "absolute",
-              top: 30,
-              left: 20
-          }}>
-            <View style={{
-              backgroundColor: "#000000",
-              borderColor: "#dde2ec",
-              padding: 10,
-              borderRadius: 100,
-              width: 45,
-              height: 45,
-              justifyContent: "center",
-              alignItems: "center",
-              opacity: 0.5
-            }}>
-              <FontAwesome 
-                style={{position: "absolute", left: 14, top: 15}}
-                name="image"
-                size={15}
-                color={"white"}
-              />
-            </View>
-        </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => pickImage(index)}
+                      style={{
+                        position: "absolute",
+                        top: 30,
+                        left: 20
+                      }}>
+                      <View style={{
+                        backgroundColor: "#000000",
+                        borderColor: "#dde2ec",
+                        padding: 10,
+                        borderRadius: 100,
+                        width: 45,
+                        height: 45,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        opacity: 0.5
+                      }}>
+                        <FontAwesome
+                          style={{ position: "absolute", left: 14, top: 15 }}
+                          name="image"
+                          size={15}
+                          color={"white"}
+                        />
+                      </View>
+                    </TouchableOpacity>
 
                     <View style={{
                       padding: 10,
@@ -530,7 +527,7 @@ export default function UploadVideoCourse() {
                         <View style={{ marginTop: 8 }}>
                           <ScrollView keyboardShouldPersistTaps="handled">
                             <View style={styles.container}>
-                            <Modal
+                              <Modal
                                 animationType="fade"
                                 transparent={true}
                                 visible={modalVisible}
@@ -611,9 +608,9 @@ export default function UploadVideoCourse() {
                                 onRequestClose={() => {
                                   setModalVisibleDesc(!modalVisibleDesc);
                                 }}>
-                                <View style={[styles.centeredView, {marginHorizontal: 20}]}>
+                                <View style={[styles.centeredView, { marginHorizontal: 20 }]}>
                                   <View style={[styles.modalView]}>
-                                    <Text style={{                  
+                                    <Text style={{
                                       fontFamily: "Nunito_700Bold",
                                       fontSize: 24
                                     }}>
@@ -627,8 +624,8 @@ export default function UploadVideoCourse() {
                                         }
                                         multiline={true}
                                         style={{
-                                          height: 200, 
-                                          width: 325, 
+                                          height: 200,
+                                          width: 325,
                                           fontSize: 16,
                                           justifyContent: "flex-start",
                                           textAlignVertical: 'top',
@@ -831,43 +828,43 @@ export default function UploadVideoCourse() {
           <View>
             {!loadingUploadVideo ? (
               <TouchableOpacity
-              onPress={submitUploadVideoCourse}
-              disabled={videos.length > 0 ? false : true}
-              style={{
-                marginVertical: 20,
-                backgroundColor: "#2865e3",
-                paddingHorizontal: 30,
-                paddingVertical: 15,
-                borderRadius: 10,
-              }}
-            >
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center"
-              }}>
-                <AntDesign
-                  name='save'
-                  size={30}
-                  color={'white'}
-                  style={{
-                    fontWeight: 'bold',
-                    textAlign: "center"
-                  }}
-                />
-                <Text
-                  style={{
-                    paddingLeft: 10,
-                    color: "white",
-                    fontFamily: "Nunito_700Bold",
-                    fontSize: 16,
-                  }}
-                >
-                  Lưu Video
-                </Text>
-              </View>
-            </TouchableOpacity>
-            ) : ( 
+                onPress={submitUploadVideoCourse}
+                disabled={videos.length > 0 ? false : true}
+                style={{
+                  marginVertical: 20,
+                  backgroundColor: "#2865e3",
+                  paddingHorizontal: 30,
+                  paddingVertical: 15,
+                  borderRadius: 10,
+                }}
+              >
+                <View style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  <AntDesign
+                    name='save'
+                    size={30}
+                    color={'white'}
+                    style={{
+                      fontWeight: 'bold',
+                      textAlign: "center"
+                    }}
+                  />
+                  <Text
+                    style={{
+                      paddingLeft: 10,
+                      color: "white",
+                      fontFamily: "Nunito_700Bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    Lưu Video
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : (
               <View style={{
                 flex: 1,
                 flexDirection: 'column',
@@ -876,8 +873,8 @@ export default function UploadVideoCourse() {
                 marginBottom: 15
               }}>
                 <Progress.Circle
-                  style={{ marginTop: 15 }} 
-                  progress={progress} 
+                  style={{ marginTop: 15 }}
+                  progress={progress}
                   showsText={true}
                   size={70} />
               </View>

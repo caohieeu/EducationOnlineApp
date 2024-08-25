@@ -44,6 +44,7 @@ export default function UploadCourse() {
     title: "",
     desc: "",
     courseDetail: "",
+    courseImage: "",
     price: 0,
     tags: [],
     discount: 0
@@ -78,6 +79,7 @@ export default function UploadCourse() {
         title: courseUpload.title,
         desc: courseUpload.desc,
         courseDetail: courseUpload.courseDetail,
+        courseImage: courseUpload.courseImage,
         price: courseUpload.price,
         tags: courseUpload.tags,
         discount: courseUpload.discount
@@ -87,7 +89,6 @@ export default function UploadCourse() {
       },
     )
       .then((res) => {
-        console.log(res.data._id)
         router.push({
           pathname: "(routes)/upload/upload-video-course",
           params: {courseId: res.data._id}
@@ -119,6 +120,7 @@ export default function UploadCourse() {
     })
       .then((res) => {
         setThumbnailCourse(res.data.data.image_url);
+        setCourseUpload({...courseUpload, courseImage: res.data.data.image_url})
       })
       .catch((err) => {
         console.log(err);
@@ -379,7 +381,6 @@ export default function UploadCourse() {
             }}>
               <TextInput
                 onChangeText={(value) => {
-                  console.log(courseUpload.discount);
                   if (courseUpload.discount.toString().length <= 2) {
                     setCourseUpload({ ...courseUpload, discount: Number.parseFloat(value) })
                   }

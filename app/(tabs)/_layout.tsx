@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import { Image } from 'react-native';
 import UploadModal from '@/components/UploadModal';
+import useUser from '@/hooks/useUser';
 
 interface TabLayoutProps {}
 
-const TabLayout: React.FC<TabLayoutProps> = ({}) => {
+const TabLayout: React.FC<TabLayoutProps> = () => {
+    const { user, loading } = useUser();
     const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
 
     const openUploadModal = () => {
@@ -16,37 +18,75 @@ const TabLayout: React.FC<TabLayoutProps> = ({}) => {
         setUploadModalVisible(false);
     };
 
+    if (loading) {
+        return null; // Return nothing while loading
+    }
+
     return (
         <>
             <Tabs
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ color }) => {
                         let iconName;
-                        if (route.name === "index") {
-                            iconName = require("@/assets/icons/home.png");
-                        } else if (route.name === "profile/index") {
-                            iconName = require("@/assets/icons/profile.png");
-                        } else if (route.name === "upload/index") {
-                            iconName = require("@/assets/icons/upload.png");
+                        switch (route.name) {
+                            case "index":
+                                iconName = require("@/assets/icons/home.png");
+                                break;
+                            case "upload/index":
+                                iconName = require("@/assets/icons/upload.png")
+                                break;
+                            case "student-courses/index":
+                                iconName = require("@/assets/icons/book.png");
+                                break;
+                            case "profile/index":
+                                iconName = require("@/assets/icons/profile.png");
+                                break;
+                            default:
+                                iconName = null;
                         }
-                        return (
+                        return iconName ? (
                             <Image
                                 style={{ width: 27, height: 25, tintColor: color }}
                                 source={iconName}
                             />
-                        );
+                        ) : null;
                     },
                     headerShown: false,
                     tabBarShowLabel: false
                 })}
             >
                 <Tabs.Screen name="index" />
-                <Tabs.Screen name="upload/index" listeners={({ navigation }) => ({
-                    tabPress: event => {
-                        event.preventDefault();
-                        openUploadModal();
-                    }
-                })} />
+
+                <Tabs.Screen
+                    name="upload/index"
+                    options={{ headerShown: false,
+                        href: !(user?.role == "Teacher") ? null : 
+                        "(tabs)/upload"  }}
+                    listeners={({ navigation }) => ({
+                        tabPress: event => {
+                            if(user?.role == "Teacher") {
+                                event.preventDefault();
+                                openUploadModal();
+                            }
+                        }
+                    })}
+                />
+
+                <Tabs.Screen
+                    name="student-courses/index"
+                    options={{ headerShown: false,
+                        href: !(user?.role == "Student") ? null : 
+                        "(tabs)/student-courses"  }}
+                    listeners={({ navigation }) => ({
+                        tabPress: event => {
+                            if(user?.role == "Teacher") {
+                                event.preventDefault();
+                                openUploadModal();
+                            }
+                        }
+                    })}
+                />
+
                 <Tabs.Screen name="profile/index" />
             </Tabs>
 

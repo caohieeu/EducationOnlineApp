@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native'
 import OnBoarding from "./(routes)/onboarding/index";
 import { ToastProvider } from 'react-native-toast-notifications';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,21 +33,26 @@ function RootLayoutNav() {
   const [isLogged, setIsLogged] = useState(false);
 
   return <>{isLogged ? <View></View> : (
-    <ToastProvider>
-      <Stack screenOptions={{headerShown: false}}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(routes)/welcome-intro" />
-        <Stack.Screen name="(routes)/auth/signin" />
-        <Stack.Screen name="(routes)/auth/signup" />
-        <Stack.Screen name="(routes)/auth/verifyAccount" />
-        <Stack.Screen name="(routes)/profile-detail" />
-        <Stack.Screen name="(routes)/follow/follower" />
-        <Stack.Screen name="(routes)/follow/following" />
-        <Stack.Screen name="(routes)/profile-other" />
-        <Stack.Screen name="(routes)/upload/upload-video" />
-        <Stack.Screen name="(routes)/upload/upload-course" />
-        <Stack.Screen name="(routes)/upload/upload-video-course" />
-      </Stack>
-    </ToastProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ToastProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(routes)/welcome-intro" />
+          <Stack.Screen name="(routes)/auth/signin" />
+          <Stack.Screen name="(routes)/auth/signup" />
+          <Stack.Screen name="(routes)/auth/verifyAccount" />
+          <Stack.Screen name="(routes)/profile-detail" />
+          <Stack.Screen name="(routes)/follow/follower" />
+          <Stack.Screen name="(routes)/follow/following" />
+          <Stack.Screen name="(routes)/profile-other/index" />
+          <Stack.Screen name="(routes)/profile-other/teacher-courses" />
+          <Stack.Screen name="(routes)/upload/upload-video" />
+          <Stack.Screen name="(routes)/upload/upload-course" />
+          <Stack.Screen name="(routes)/upload/upload-video-course" />
+          <Stack.Screen name="(routes)/video" />
+          <Stack.Screen name="(routes)/course/course-detail" />
+        </Stack>
+      </ToastProvider>
+    </QueryClientProvider>
   )}</>;
 }

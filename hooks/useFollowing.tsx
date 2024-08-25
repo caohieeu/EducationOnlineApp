@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function useFollowing(otherUserId:any) {
     const [loading, setLoading] = useState(true);
@@ -30,13 +31,15 @@ export default function useFollowing(otherUserId:any) {
         }
     }, [otherUserId, trigger]); 
 
-    useEffect(() => {
-        fetchFollowing();
-    }, [fetchFollowing]);
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchFollowing();
+        }, [fetchFollowing])
+    );
 
     const refreshFollowing = () => {
-        console.log("change");
+        setTrigger(prevState => !prevState);
     };
 
-    return { loading, following, refreshFollowing }
+    return { loading, following, refreshFollowing, fetchFollowing }
 }

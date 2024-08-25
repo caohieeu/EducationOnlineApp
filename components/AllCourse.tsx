@@ -25,7 +25,7 @@ export default function AllCourse() {
     Nunito_600SemiBold
 })
 
-  const { videoCourses, loading, error } = useCourses(1);
+  const { courses, loading, error } = useCourses(1);
 
   return (
     <>
@@ -54,10 +54,10 @@ export default function AllCourse() {
         </View>
         <FlatList 
           ref={flatlistref}
-          data={videoCourses}
+          data={courses}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item._id}
           renderItem={({item}) => <CourseCard item={item} />}
         />
       </View>

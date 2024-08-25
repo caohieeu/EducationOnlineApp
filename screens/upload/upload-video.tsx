@@ -28,6 +28,7 @@ import * as FileSystem from "expo-file-system";
 import {Buffer} from "buffer";
 
 export default function UploadVideo() {
+  const videoRef = useRef<Video>(null);
   let [fontsLoaded, fontError] = useFonts({
     Raleway_700Bold,
     Nunito_400Regular,
@@ -35,7 +36,6 @@ export default function UploadVideo() {
     Raleway_600SemiBold,
     Nunito_600SemiBold
 })
-  const videoRef = useRef<Video>(null);
   const [video, setVideo] = useState<string | null>(null);
   const [addDesc, setAddDesc] = useState(false);
   const [image, setImage] = useState("");
@@ -93,7 +93,6 @@ export default function UploadVideo() {
         }
       })
       .then((res) => {
-        console.log(res.data.data.image_url);
         setImage(res.data.data.image_url);
         setVideoUpload({...videoUpload, image_url: res.data.data.image_url});
         setLoadingImage(false);

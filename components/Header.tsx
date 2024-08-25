@@ -53,9 +53,15 @@ export default function Header() {
             </View>
         </View>
         <TouchableOpacity style={styles.bellButton}>
-            <View>
+            {/* <View>
                 <Feather name="shopping-bag" size={26} color={"black"} />
                 <View style={styles.bellContainer}></View>
+            </View> */}
+            <View>
+                <Image 
+                    source={require("@/assets/images/logo.png")}
+                    style={styles.imgBanner}
+                />
             </View>
         </TouchableOpacity>
     </View>
@@ -68,7 +74,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         marginHorizontal: 16,
-        marginBottom: 16,
+        paddingBottom: 1,
         width: "90%"
     },
     headerWrapper: {
@@ -102,5 +108,10 @@ const styles = StyleSheet.create({
     helloText: {
         color: "#7C7C80",
         fontSize: 14
+    },
+    imgBanner: {
+        width: 120,
+        height: 80,
+        marginRight: -25
     }
 })

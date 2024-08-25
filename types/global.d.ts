@@ -74,9 +74,28 @@ interface VideoUploadCourse {
     tags: string[]
 }
 
+interface VideoSingle {
+    id: string,
+    user: {
+        user_id: string,
+        user_name: string,
+        user_avatar: string
+    }
+    time: Date
+    title: string,
+    description: string,
+    view: number,
+    like: number,
+    thumbnail: string,
+    status: string,
+    statusNum: number,
+    videoUrl: string,
+    fileType: string,
+    tags: string[]
+}
+
 interface VideoCourse {
     id: string,
-    user_id: string,
     time: Date
     title: string,
     description: string,
@@ -98,7 +117,46 @@ interface CourseUpload {
     title: string,
     desc: string,
     courseDetail: string,
+    courseImage: string,
     price: number,
     tags: string[],
     discount: number
 }
+
+interface Course {
+    _id: string,
+    title: string,
+    desc: string,
+    courseDetail: string,
+    courseImage: string,
+    price: number,
+    tags: [],
+    discount: 10,
+    cuser: {
+      user_id: string,
+      user_name: string,
+      user_avatar: string
+    },
+    cdate: Date,
+    edate: Date,
+    students: [
+      {
+        rate: number,
+        user_id: string,
+        user_name: string,
+        user_avatar: string
+      }
+    ],
+    videos: VideoSingle[]
+  }
+
+ type PaginationState = {
+    pageSize: number;
+    page: number;
+    total_pages?: number;
+    total_rows?: number;
+  };
+  
+interface PaginationResponse<Data> extends PaginationState {
+    data: Data;
+  }

@@ -2,22 +2,18 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
 
 export default function useCourses(page:number) {
     const [loading, setLoading] = useState(true);
-    const [videoCourses, setVideoCourses] = useState<VideoCourse[]>();
+    const [courses, setCourses] = useState<Course[]>();
     const [error, setError] = useState("");
 
     useEffect(() => {
         const subscription = async () => {
-            const token = await AsyncStorage.getItem("access_token");
-
             await axios
-                .get(`${SERVER_URI}/api/Video?page=${page}&pageSize=6`)
+                .get(`${SERVER_URI}/api/Course/GetNewestCourses?page=${page}&pageSize=25`)
                 .then((res:any) => {
-                    setVideoCourses(res.data.data);
+                    setCourses(res.data.data);
                     setLoading(false);
                 })
                 .catch((error:any) => {
@@ -29,5 +25,5 @@ export default function useCourses(page:number) {
         subscription();
     }, [])
 
-    return { loading, videoCourses, error }
+    return { loading, courses, error }
 }

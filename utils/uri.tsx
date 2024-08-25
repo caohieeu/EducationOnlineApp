@@ -1,1 +1,1 @@
-export const SERVER_URI = process.env.SERVER_URI || "http://10.0.2.2"
+export const SERVER_URI = "https://cms.hightfive.click"

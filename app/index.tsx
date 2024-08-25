@@ -6,11 +6,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TabsIndex() {
     const { loading, user } = useUser();
-    
+
     useEffect(() => {
         const func = async () => {
             const token = await AsyncStorage.getItem("access_token");
-            console.log(token);
         }
         func();
     }, [])

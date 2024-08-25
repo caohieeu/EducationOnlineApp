@@ -18,7 +18,7 @@ import {
 } from "@expo-google-fonts/nunito"
 import { router } from 'expo-router';
 
-export default function VideoCard({ item }: { item: VideoSingle }) {
+export default function VideoCourseCard({ item }: { item: VideoCourse }) {
     let [fontsLoaded, fontError] = useFonts({
         Raleway_700Bold,
         Nunito_400Regular,
@@ -114,27 +114,6 @@ export default function VideoCard({ item }: { item: VideoSingle }) {
                             </View>
                         </View>
                     </View>
-                    <Text>{dateCreated}</Text>
-                </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingBottom: 5,
-                    }}
-                >
-                    <View style={{ 
-                        flexDirection: "row", 
-                        justifyContent: "center", 
-                        alignItems: "center", 
-                        paddingTop: 10
-                     }}>
-                        <Ionicons name="person" size={20} color={"#8A8A8A"} />
-                        <Text style={{ fontSize: 18, fontFamily: "Nunito_400Regular", paddingLeft: 10 }}>
-                            {item.user.user_name}
-                        </Text>
-                    </View>
                     <View
                         style={{
                             flexDirection: "row",
@@ -146,6 +125,15 @@ export default function VideoCard({ item }: { item: VideoSingle }) {
                             {dateCreated}
                         </Text>
                     </View>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        paddingBottom: 5,
+                    }}
+                >
                 </View>
                 <View>
                 </View>

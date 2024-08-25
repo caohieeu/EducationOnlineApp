@@ -3,43 +3,30 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
 
-export default function useUser() {
+export default function useVideos(page:number) {
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<User>();
-    const [follower, setFollower] = useState();
+    const [videoCourses, setVideoCourses] = useState<VideoSingle[]>();
     const [error, setError] = useState("");
 
     useEffect(() => {
         const subscription = async () => {
             const token = await AsyncStorage.getItem("access_token");
 
-            if(token == null) {
-                setLoading(false);
-                return;
-            }
-            console.log(`${SERVER_URI}/api/User`)
             await axios
-                .get(`${SERVER_URI}/api/User`, {
-                    headers: {
-                        "Cookie": token?.toString()
-                    },
-                })
+                .get(`${SERVER_URI}/api/Video?page=${page}&pageSize=6`)
                 .then((res:any) => {
-                    setUser(res.data);
+                    setVideoCourses(res.data.data);
                     setLoading(false);
-                    AsyncStorage.setItem("user_id", res.data.id);
                 })
                 .catch((error:any) => {
                     setError(error.message);
                     setLoading(false);
-                    router.push("(routes)/auth/signin")
-                    console.log("Error fetch user: " + error);
+                    console.log("Error fetch video: " + error);
                 })
         }
         subscription();
     }, [])
 
-    return { loading, user, follower, error }
+    return { loading, videoCourses, error }
 }

@@ -23,7 +23,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ visible, onClose }) => {
     
         if(!result.canceled) {
             setImage(result.assets[0].uri);
-            console.log(result.assets[0]);
             await AsyncStorage.setItem("info_video", JSON.stringify(result.assets[0]));
             onClose();
             router.push({

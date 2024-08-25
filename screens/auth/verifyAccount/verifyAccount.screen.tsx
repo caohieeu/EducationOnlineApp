@@ -4,9 +4,9 @@ import { styles } from '@/styles/verify';
 import { commonStyles } from '@/styles/common';
 
 export default function VerifyAccountScreen() {
-    const [code, setCode] = useState(new Array(4).fill(''));
 
     const inputs = useRef<any>([...Array(4)].map(() => React.createRef()))
+    const [code, setCode] = useState(new Array(4).fill(''));
 
     const handleInput = (text:any, index:any) => {
         const newCode = [...code];

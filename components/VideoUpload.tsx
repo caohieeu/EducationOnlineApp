@@ -13,6 +13,9 @@ import {
 } from "@expo-google-fonts/nunito"
 import useCourses from '@/hooks/useCourses';
 import CourseCard from './CourseCard';
+import VideoCard from './VideoCard';
+import { useQueryRequest } from '@/utils/useQueryRequest';
+import { useGetListVideo } from '@/hooks/useGetListVideo';
 
 export default function VideoUpload() {
   const flatlistref = useRef(null);
@@ -23,9 +26,11 @@ export default function VideoUpload() {
     Raleway_600SemiBold,
     Nunito_600SemiBold
 })
-
-  const { videoCourses, loading, error } = useCourses(1);
-
+  const { queryString, updateQueryState } = useQueryRequest({
+    pageSize: 30,
+    page: 1,
+  });
+  const { data: videos, refetch, isLoading } = useGetListVideo(queryString);
   return (
     <View style={{ flex: 1, marginHorizontal: 16, marginTop: 30 }}>
       <View
@@ -35,7 +40,9 @@ export default function VideoUpload() {
           justifyContent: "space-between"
         }}
       >
-        <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold"}}>Video nổi bật</Text>
+        <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold", paddingLeft: 5}}>
+          Video nổi bật
+        </Text>
         <TouchableOpacity>
           <Text
             style={{fontSize: 15, color: "#2467EC", fontFamily: "Nunito_600SemiBold"}}
@@ -46,10 +53,10 @@ export default function VideoUpload() {
       </View>
       <FlatList 
         ref={flatlistref}
-        data={videoCourses}
+        data={videos?.data}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({item}) => <CourseCard item={item} />}
+        renderItem={({item}) => <VideoCard item={item} />}
       />
     </View>
   )

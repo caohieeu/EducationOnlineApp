@@ -5,10 +5,11 @@ import Header from '@/components/Header'
 import { commonStyles } from '@/styles/common'
 import SearchInput from '@/components/SearchInput'
 import HomeBarSlider from '@/components/HomeBarSlider'
-import AllCourse from '@/components/AllCourse'
+import AllVideo from '@/components/AllVideo'
 import useUser from '@/hooks/useUser'
 import Loader from '@/loader/loader'
 import VideoUpload from '@/components/VideoUpload'
+import AllCourse from '@/components/AllCourse'
 
 export default function HomeScreen() {
     const { user, loading } = useUser();
