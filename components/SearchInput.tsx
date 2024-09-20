@@ -22,6 +22,10 @@ export default function SearchInput() {
         Nunito_600SemiBold
     })
 
+    if(!fontsLoaded && !fontError) {
+        return null;
+    }
+
     return (
     <View style={styles.filteringContainer}>
         <View style={styles.searchContainer}>

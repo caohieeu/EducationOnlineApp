@@ -12,9 +12,7 @@ export default function OnBoardingScreen() {
         Nunito_400Regular,
         Nunito_700Bold
     })
-    if(!fontsLoaded && !fontError) {
-        return null;
-    }
+    
     return (
         <LinearGradient 
             colors={["#E5ECF9", "#F6F7F9"]} 

@@ -56,15 +56,6 @@ export default function UploadVideoCourse() {
     video_size: number;
     fileType: string;
   }
-
-  const [courseUpload, setCourseUpload] = useState<CourseUpload>({
-    title: "",
-    desc: "",
-    courseDetail: "",
-    price: 0,
-    tags: [],
-    discount: 0
-  })
   const [text, setText] = useState<string[]>([]);
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,9 +63,7 @@ export default function UploadVideoCourse() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isCheckPublic, setIsCheckPublic] = useState(false);
   const [isCheckPrivate, setIsCheckPrivate] = useState(false);
-  const [pressLoading, setPressLoading] = useState(false);
   const [loadingImage, setLoadingImage] = useState(false);
-  const [addDesc, setAddDesc] = useState(false);
   const [thumbnailVideo, setThubnailVideo] = useState<string[]>([]);
   const [videoUpload, setVideoUpload] = useState<VideoUploadCourse[]>([])
   const [modalVisibleDesc, setModalVisibleDesc] = useState(false)
@@ -86,7 +75,7 @@ export default function UploadVideoCourse() {
     video4: false,
     video5: false
   });
-  const [animation] = useState(new Animated.Value(0));
+  //const [animation] = useState(new Animated.Value(0));
   const defaultImage = "https://imexpert.au/wp-content/uploads/2023/08/image-not-found.png";
 
   const handlePublicPress = (pos: number) => {
@@ -478,7 +467,7 @@ export default function UploadVideoCourse() {
                 {videoUpload?.map((item, index) => (
                   <View key={index}>
                     <Image
-                      source={{ uri: item?.image_url }}
+                      source={{ uri: item?.image_url || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png"}}
                       style={styles.video}
                     />
                     <TouchableOpacity

@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions"
-import { FontAwesome, Ionicons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -40,6 +40,10 @@ export default function MyCoursesCard({ item }: { item: Course }) {
         const formattedDate = `${day}/${month}/${year}`;
         setDateCreated(formattedDate);
     }, [])
+
+    if(!fontsLoaded && !fontError) {
+        return null;
+    }
 
     return (
         <TouchableOpacity

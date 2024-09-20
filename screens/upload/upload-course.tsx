@@ -147,6 +147,8 @@ export default function UploadCourse() {
     }
   }
 
+
+  
   return (
     <LinearGradient
       colors={["#E5ECF9", "#F6F7F9"]}
@@ -314,7 +316,8 @@ export default function UploadCourse() {
               >
                 {thumbnailCourse != "" ? (
                   <Image
-                    source={{ uri: thumbnailCourse }}
+                    source={{ uri: thumbnailCourse || 
+                      "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png" }}
                     style={{
                       width: "100%",
                       height: "100%",

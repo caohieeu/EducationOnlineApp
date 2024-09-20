@@ -29,13 +29,7 @@ export default function AllCourse() {
 
   return (
     <>
-      {loading ? (
-        <ActivityIndicator
-          style={commonStyles.containerCenter}
-          size={"large"}
-        />
-      ) : (
-        <View style={{ flex: 1, marginHorizontal: 16, marginTop: 30 }}>
+      <View style={{ flex: 1, marginHorizontal: 16, marginTop: 30 }}>
         <View
           style={{
             flexDirection: "row",
@@ -61,7 +55,6 @@ export default function AllCourse() {
           renderItem={({item}) => <CourseCard item={item} />}
         />
       </View>
-      )}
     </>
   )
 }

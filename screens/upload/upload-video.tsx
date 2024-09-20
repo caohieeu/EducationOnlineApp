@@ -409,7 +409,7 @@ export default function UploadVideo() {
                 />
               ) : (
                 <Image 
-                  source={{ uri: image }}
+                  source={{ uri: image || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png"}}
                   style={styles.video}
                 />
               )}

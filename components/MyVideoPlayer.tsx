@@ -1,11 +1,6 @@
 import { ActivityIndicator, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions"
-import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { responsiveWidth } from "react-native-responsive-dimensions"
 import {
     useFonts,
     Raleway_700Bold,
@@ -48,6 +43,10 @@ export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
             console.log(err);
         }
     }, [videoInfo])
+
+    if(!fontsLoaded && !fontError) {
+        return null;
+    }
 
     return (
         <View>

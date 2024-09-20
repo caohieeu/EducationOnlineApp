@@ -38,6 +38,9 @@ const TabLayout: React.FC<TabLayoutProps> = () => {
                             case "student-courses/index":
                                 iconName = require("@/assets/icons/book.png");
                                 break;
+                            case "room/index":
+                                iconName = require("@/assets/icons/camcorder.png")
+                                break;
                             case "profile/index":
                                 iconName = require("@/assets/icons/profile.png");
                                 break;
@@ -47,7 +50,7 @@ const TabLayout: React.FC<TabLayoutProps> = () => {
                         return iconName ? (
                             <Image
                                 style={{ width: 27, height: 25, tintColor: color }}
-                                source={iconName}
+                                source={iconName || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png"}
                             />
                         ) : null;
                     },
@@ -87,6 +90,7 @@ const TabLayout: React.FC<TabLayoutProps> = () => {
                     })}
                 />
 
+                <Tabs.Screen name="room/index" />
                 <Tabs.Screen name="profile/index" />
             </Tabs>
 

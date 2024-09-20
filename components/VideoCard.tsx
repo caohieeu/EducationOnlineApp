@@ -58,7 +58,7 @@ export default function VideoCard({ item }: { item: VideoSingle }) {
                         alignSelf: "center",
                         objectFit: "cover",
                     }}
-                    source={{ uri: item.thumbnail }}
+                    source={{ uri: item.thumbnail || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png" }}
                 />
                 <View style={{ width: wp(85) }}>
                     <Text

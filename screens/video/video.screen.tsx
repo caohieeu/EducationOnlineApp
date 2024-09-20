@@ -7,22 +7,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import {
   useFonts,
-  Raleway_700Bold,
-  Raleway_600SemiBold
 } from '@expo-google-fonts/raleway'
 import {
   Nunito_400Regular,
   Nunito_700Bold,
-  Nunito_600SemiBold
 } from "@expo-google-fonts/nunito"
 
 export default function VideoScreen() {
   let [fontsLoaded, fontError] = useFonts({
-    Raleway_700Bold,
     Nunito_400Regular,
     Nunito_700Bold,
-    Raleway_600SemiBold,
-    Nunito_600SemiBold
   })
 
   const { videoInfo } = useLocalSearchParams();
@@ -34,6 +28,10 @@ export default function VideoScreen() {
     setVideo(videoObj);
   }, [])
   
+  if(!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <HeaderScreen titleHeader='Xem video' />

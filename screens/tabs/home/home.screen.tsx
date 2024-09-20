@@ -1,22 +1,43 @@
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient'
-import Header from '@/components/Header'
-import { commonStyles } from '@/styles/common'
-import SearchInput from '@/components/SearchInput'
-import HomeBarSlider from '@/components/HomeBarSlider'
-import AllVideo from '@/components/AllVideo'
-import useUser from '@/hooks/useUser'
-import Loader from '@/loader/loader'
-import VideoUpload from '@/components/VideoUpload'
-import AllCourse from '@/components/AllCourse'
+import { ActivityIndicator, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import Header from '@/components/Header';
+import SearchInput from '@/components/SearchInput';
+import HomeBarSlider from '@/components/HomeBarSlider';
+import useUser from '@/hooks/useUser';
+import Loader from '@/loader/loader';
+import AllCourse from '@/components/AllCourse';
+import { useQueryRequest } from '@/utils/useQueryRequest';
+import { useGetListVideo } from '@/hooks/useGetListVideo';
+import VideoCard from '@/components/VideoCard';
 
 export default function HomeScreen() {
+    const [page, setPage] = useState(1);
+    const [dataVideo, setDataVideo] = useState<VideoSingle[]>([]);
     const { user, loading } = useUser();
+    const { queryString, updateQueryState } = useQueryRequest({
+        page: 1,
+        pageSize: 10
+    });
+    const { data: videos, isFetched, isLoading } = useGetListVideo(queryString);
+
+    const fetchNextData = () => {
+        console.log("page: " + page)
+        if (!isLoading && isFetched) {
+            setPage((prevPage) => prevPage + 1);
+            updateQueryState({ page: page + 1 });
+        }
+    };
+
+    useEffect(() => {
+        if (videos?.data) {
+            setDataVideo((prevVideos) => [...prevVideos, ...videos.data]);
+        }
+    }, [videos]);
 
     return (
         <>
-            {loading ? (
+            {loading && page === 1 ? (
                 <Loader />
             ) : (
                 <LinearGradient
@@ -24,14 +45,31 @@ export default function HomeScreen() {
                     style={{ flex: 1, paddingTop: 50 }}
                 >
                     <Header />
-                    <ScrollView>
-                        <SearchInput />
-                        <HomeBarSlider />
-                        <AllCourse />
-                        <VideoUpload />
-                    </ScrollView>
+                    <FlatList
+                        style={{
+                            marginHorizontal: 16,
+                            marginTop: 30,
+                        }}
+                        data={dataVideo}
+                        ListHeaderComponent={() => (
+                            <>
+                                <SearchInput />
+                                <HomeBarSlider />
+                                <AllCourse />
+                            </>
+                        )}
+                        renderItem={({ item }) => <VideoCard item={item} />}
+                        keyExtractor={(item, index) => `${item.id}-${index}`}
+                        onEndReached={fetchNextData}
+                        showsVerticalScrollIndicator={false}
+                        ListFooterComponent={() => (
+                            isLoading ? (
+                                <ActivityIndicator size="small" color="#0000ff" />
+                            ) : null
+                        )}
+                    />
                 </LinearGradient>
             )}
         </>
-    )
+    );
 }

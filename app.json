@@ -33,7 +33,8 @@
         {
           "microphonePermission": "Allow education to access your microphone."
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true

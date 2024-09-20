@@ -62,6 +62,7 @@ export default function SigninScreen() {
     }
 
     const handleSigin = async () => {
+        console.log(`${SERVER_URI}/api/User/auth`);
         setButtonSpinner(true);
         if(validateInput(userInfo.username, userInfo.password)) {
             console.log(userInfo.username + " - " + userInfo.password)
@@ -96,6 +97,10 @@ export default function SigninScreen() {
             return false;
         }
         return true;
+    }
+
+    if(!fontsLoaded && !fontError) {
+        return null;
     }
 
     return (

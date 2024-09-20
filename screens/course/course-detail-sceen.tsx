@@ -16,7 +16,6 @@ import {
   Nunito_600SemiBold
 } from "@expo-google-fonts/nunito"
 import { Ionicons } from '@expo/vector-icons'
-import VideoCard from '@/components/VideoCard'
 import VideoCourseCard from '@/components/VideoCourseCard'
 
 export default function CourseDetailScreen() {
@@ -63,13 +62,13 @@ export default function CourseDetailScreen() {
       style={{ flex: 1 }}
     >
       <HeaderScreen titleHeader="Chi tiết khóa học" />
-      <ScrollView>
+      <ScrollView nestedScrollEnabled={true}>
         <View style={{
           marginHorizontal: 13,
           marginBottom: 10
         }}>
           <Image
-            source={{ uri: course?.courseImage }}
+            source={{ uri: course?.courseImage || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png" }}
             style={{
               width: "100%",
               height: 230

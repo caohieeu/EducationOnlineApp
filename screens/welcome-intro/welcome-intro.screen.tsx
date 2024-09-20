@@ -8,7 +8,10 @@ export default function WelcomeIntro() {
     Raleway_700Bold,
     Nunito_400Regular,
     Nunito_700Bold
-})
+  })
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
 
   return (
     <View>

@@ -58,7 +58,7 @@ export default function VideoCourseCard({ item }: { item: VideoCourse }) {
                         alignSelf: "center",
                         objectFit: "cover",
                     }}
-                    source={{ uri: item.thumbnail }}
+                    source={{ uri: item.thumbnail || "" }}
                 />
                 <View style={{ width: wp(85) }}>
                     <Text

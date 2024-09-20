@@ -3,7 +3,6 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Modal, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { AsyncLocalStorage } from 'async_hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface UploadModalProps {

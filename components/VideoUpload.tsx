@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef } from 'react'
+import { FlatList, InteractionManager, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useRef, useState } from 'react'
 
 import { 
   useFonts, 
@@ -16,6 +16,9 @@ import CourseCard from './CourseCard';
 import VideoCard from './VideoCard';
 import { useQueryRequest } from '@/utils/useQueryRequest';
 import { useGetListVideo } from '@/hooks/useGetListVideo';
+import SearchInput from './SearchInput';
+import HomeBarSlider from './HomeBarSlider';
+import AllCourse from './AllCourse';
 
 export default function VideoUpload() {
   const flatlistref = useRef(null);
@@ -26,11 +29,20 @@ export default function VideoUpload() {
     Raleway_600SemiBold,
     Nunito_600SemiBold
 })
+  const [isLoadingVideo, setIsLoadingVideo] = useState(true);
+  const [data, setData] = useState([]);
+  const nextPageIdentifierRef = useRef();
+  const [isFirstPageReceived, setIsFirstPageReceived] = useState(false);
   const { queryString, updateQueryState } = useQueryRequest({
-    pageSize: 30,
+    pageSize: 10,
     page: 1,
   });
   const { data: videos, refetch, isLoading } = useGetListVideo(queryString);
+
+  const fetchNextData = () => {
+
+  };
+
   return (
     <View style={{ flex: 1, marginHorizontal: 16, marginTop: 30 }}>
       <View
@@ -51,13 +63,18 @@ export default function VideoUpload() {
           </Text>
         </TouchableOpacity>
       </View>
-      <FlatList 
-        ref={flatlistref}
-        data={videos?.data}
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({item}) => <VideoCard item={item} />}
-      />
+      <FlatList
+      data={videos?.data}
+      renderItem={({ item }) => <VideoCard item={item} />}
+      keyExtractor={(item) => item.id.toString()}
+      onEndReached={() => {
+        InteractionManager.runAfterInteractions(() => {
+          console.log("Reached End");
+        });
+      }}
+      onEndReachedThreshold={0.1}
+      showsVerticalScrollIndicator={false} 
+    />
     </View>
   )
 }

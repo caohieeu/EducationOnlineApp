@@ -50,6 +50,18 @@ export default function StudentCoursesScreen() {
           colors={["#E5ECF9", "#F6F7F9"]}
           style={{ flex: 1 }}
         >
+          <View style={{
+            marginTop: 50
+          }}>
+            <Text style={{
+              fontFamily: "Nunito_700Bold",
+              fontSize: 25,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}>
+              Các khóa học đã mua
+            </Text> 
+          </View>
           <FlatList
             ref={flatlistref}
             data={courses?.data}

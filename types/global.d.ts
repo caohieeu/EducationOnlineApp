@@ -156,7 +156,14 @@ interface Course {
     total_pages?: number;
     total_rows?: number;
   };
-  
+
+interface Chat {
+    id: string,
+    avatar: string,
+    name: string,
+    message: string,
+}
+
 interface PaginationResponse<Data> extends PaginationState {
     data: Data;
-  }
+}

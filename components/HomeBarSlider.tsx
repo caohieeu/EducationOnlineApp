@@ -12,10 +12,14 @@ import {
 
 export default function HomeBarSlider() {
     let [fontsLoaded, fontError] = useFonts({
-    Raleway_700Bold,
-    Nunito_400Regular,
-    Nunito_700Bold,
+        Raleway_700Bold,
+        Nunito_400Regular,
+        Nunito_700Bold,
     });
+
+    if(!fontsLoaded && !fontError) {
+        return null;
+    }
 
     return (
     <View style={styles.container}>
@@ -28,7 +32,7 @@ export default function HomeBarSlider() {
         {bannerData.map((item: BannerDataTypes, index: number) => (
             <View key={index} style={{flex: 1}}>
             <Image
-                source={item.bannerImageUrl!}
+                source={item.bannerImageUrl! || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png"}
                 style={{ width: 400, height: 250 }}
             />
             </View>

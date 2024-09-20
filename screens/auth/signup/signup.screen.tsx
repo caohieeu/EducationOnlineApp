@@ -46,6 +46,10 @@ export default function SignupScreen() {
     const [isCheckStudent, setIsCheckStudent] = useState(false);
     const [isCheckTeacher, setIsCheckTeacher] = useState(false);
 
+    if(!fontsLoaded && !fontError) {
+        return null;
+    }
+
     const isObjectValid = (obj:UserSignup):boolean => {
         return requiredFields.every(field => 
             obj.hasOwnProperty(field) &&
@@ -128,6 +132,10 @@ export default function SignupScreen() {
         setUserSignUp({...userSignUp, role: "Teacher"})
         setIsCheckStudent(false);
     }
+
+    if(!fontsLoaded && !fontError) {
+        return null;
+      }
 
     return (
         <LinearGradient colors={["#E5ECF9", "#F6F7F9"]} style={{flex: 1}}>
