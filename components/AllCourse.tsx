@@ -29,7 +29,7 @@ export default function AllCourse() {
 
   return (
     <>
-      <View style={{ flex: 1, marginHorizontal: 16, marginTop: 30 }}>
+      <View style={{ flex: 1, marginHorizontal: 5, marginTop: 30 }}>
         <View
           style={{
             flexDirection: "row",

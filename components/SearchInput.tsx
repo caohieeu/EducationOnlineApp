@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginHorizontal: 16,
+        marginHorizontal: 8,
     },
     input: {
         flex: 1,
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 5,
         paddingHorizontal: 10,
-        marginRight: 10,
     },
     searchIconContainer: {
         width: 36,

@@ -322,7 +322,6 @@ export default function UploadVideoCourse() {
     setVideoUpload((prevState) =>
       prevState.map((item: any, index) => {
         if (index === pos) {
-          console.log(item);
           return { ...item, [key]: value };
         }
         return item;

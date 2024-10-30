@@ -10,6 +10,7 @@ import AllCourse from '@/components/AllCourse';
 import { useQueryRequest } from '@/utils/useQueryRequest';
 import { useGetListVideo } from '@/hooks/useGetListVideo';
 import VideoCard from '@/components/VideoCard';
+import RecomendVideo from '@/components/RecomendVideo';
 
 export default function HomeScreen() {
     const [page, setPage] = useState(1);
@@ -56,6 +57,8 @@ export default function HomeScreen() {
                                 <SearchInput />
                                 <HomeBarSlider />
                                 <AllCourse />
+                                <RecomendVideo type='horizontal' />
+                                
                             </>
                         )}
                         renderItem={({ item }) => <VideoCard item={item} />}

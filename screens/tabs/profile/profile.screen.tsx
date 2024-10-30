@@ -54,7 +54,6 @@ export default function ProfileScreen() {
         setFollowingNumber(following || []);
     }, [following])
 
-    //reaload following when into profile screen
     onfocus = (payload) => {
         setFollowingNumber(following || []);
     }
@@ -80,17 +79,14 @@ export default function ProfileScreen() {
 
     const onFollow = async () => {
         try {
+            console.log(currentUser?.id)
+            const token = await AsyncStorage.getItem("access_token");
             await axios.post(`${SERVER_URI}/api/Follow/PostFollow`, {
-                followed: {
-                    user_id: currentUser?.id,
-                    user_display_name: currentUser?.dislayName,
-                    user_avatar: currentUser?.avatarUrl,
-                },
-                follower: {
-                    user_id: userInfo?.id,
-                    user_display_name: userInfo?.dislayName,
-                    user_avatar: userInfo?.avatarUrl,
-                },
+                user_id: currentUser?.id
+            }, {
+                headers: {
+                    "Cookie": token?.toString()
+                  }
             });
 
             Toast.show('Follow succeeded', {

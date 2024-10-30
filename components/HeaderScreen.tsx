@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function HeaderScreen({titleHeader} : {titleHeader:string}) {
+export default function HeaderScreen({titleHeader, styleHeader} : {titleHeader:string, styleHeader:string}) {
   return (
     <View
         style={{
@@ -26,9 +26,14 @@ export default function HeaderScreen({titleHeader} : {titleHeader:string}) {
             router.back();
           }}
         >
-          <AntDesign name="left" size={26} />
+          {styleHeader == null ? (
+            <AntDesign name="left" size={26} />
+          ) : (
+            <AntDesign name="left" size={26} color={'white'} />
+          )}
         </TouchableOpacity>
-        <Text
+        {styleHeader == null ? (
+          <Text
           style={{
             fontFamily: "Raleway_700Bold",
             fontSize: 25,
@@ -37,6 +42,18 @@ export default function HeaderScreen({titleHeader} : {titleHeader:string}) {
         >
           {titleHeader}
         </Text>
+        ) : (
+          <Text
+          style={{
+            fontFamily: "Raleway_700Bold",
+            fontSize: 25,
+            paddingLeft: 15,
+            color: "#fff"
+          }}
+        >
+          {titleHeader}
+        </Text>
+        )}
       </View>
     </View>
   )

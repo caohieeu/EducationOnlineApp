@@ -110,7 +110,7 @@ export default function VideoCard({ item }: { item: VideoSingle }) {
                                 marginLeft: 20
                             }}>
                                 <FontAwesome name="eye" size={14} color={"#ffb800"} />
-                                <Text style={[styles.ratingText]}>{item.like}</Text>
+                                <Text style={[styles.ratingText]}>{item.view}</Text>
                             </View>
                         </View>
                     </View>
@@ -132,7 +132,7 @@ export default function VideoCard({ item }: { item: VideoSingle }) {
                      }}>
                         <Ionicons name="person" size={20} color={"#8A8A8A"} />
                         <Text style={{ fontSize: 18, fontFamily: "Nunito_400Regular", paddingLeft: 10 }}>
-                            {item.user.user_name}
+                            {item.user?.user_name}
                         </Text>
                     </View>
                     <View
@@ -159,13 +159,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFF",
         marginHorizontal: 6,
         borderRadius: 12,
-        width: responsiveWidth(90),
+        //width: responsiveWidth(90),
         height: "auto",
         overflow: "hidden",
-        margin: "auto",
         marginVertical: 15,
         padding: 8,
-        
     },
     ratingText: {
         color: "white",

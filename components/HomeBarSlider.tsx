@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 12,
         height: hp("35%"),
-        marginHorizontal: 16,
+        marginHorizontal: 8,
     },
     activeDot: {
         backgroundColor: "#2467EC",

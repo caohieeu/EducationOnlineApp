@@ -43,7 +43,6 @@ export default function CourseDetailScreen() {
           .get(`${SERVER_URI}/api/Course/GetCourse/${courseId}`)
           .then((res: any) => {
             setCourse(res.data);
-            console.log(course?.videos)
             setLoading(false);
           })
           .catch((error: any) => {

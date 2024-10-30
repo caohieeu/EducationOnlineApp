@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import MyVideoPlayer from '@/components/MyVideoPlayer'
 import { useLocalSearchParams } from 'expo-router';
 import HeaderScreen from '@/components/HeaderScreen';
+import CommentSection from '@/components/CommentSection';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import {
@@ -12,6 +13,7 @@ import {
   Nunito_400Regular,
   Nunito_700Bold,
 } from "@expo-google-fonts/nunito"
+import RecomendVideo from '@/components/RecomendVideo';
 
 export default function VideoScreen() {
   let [fontsLoaded, fontError] = useFonts({
@@ -34,6 +36,10 @@ export default function VideoScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <LinearGradient
+          colors={["#E5ECF9", "#F6F7F9"]}
+          style={{ flex: 1}}
+        >
       <HeaderScreen titleHeader='Xem video' />
       {videoInfo != "" && videoInfo != null ? (
         <MyVideoPlayer videoInfo={JSON.stringify(videoInfo)} />
@@ -42,12 +48,9 @@ export default function VideoScreen() {
       )}
 
       <ScrollView>
-        <LinearGradient
-          colors={["#E5ECF9", "#F6F7F9"]}
-          style={{ flex: 1, paddingTop: 50 }}
-        >
+        
           <View style={{
-            paddingHorizontal: 15
+            paddingHorizontal: 18
           }}>
             <Text style={{
               fontSize: 24,
@@ -63,11 +66,15 @@ export default function VideoScreen() {
                 marginTop: 15
               }}
             >
-              {video?.description}
+               {video?.description}
             </Text>
+
+            <RecomendVideo type='vertical' />
+            
+            <CommentSection moduleId={video?.id || 'defaultModuleId'} />
           </View>
-        </LinearGradient>
       </ScrollView>
+      </LinearGradient>
     </View>
   )
 }

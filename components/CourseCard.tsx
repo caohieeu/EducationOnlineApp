@@ -62,6 +62,7 @@ export default function VideoCard({ item }: { item: Course }) {
     const onBuyCourse = async () => {
         const token = await AsyncStorage.getItem("access_token");
         setLoadingBuyBtn(true);
+        console.log(`${SERVER_URI}/api/Course/BuyCourse?courseId=${item._id}`);
         await axios
             .post(`${SERVER_URI}/api/Course/BuyCourse?courseId=${item._id}`, {
                 headers: {
@@ -194,12 +195,12 @@ export default function VideoCard({ item }: { item: Course }) {
                     <Text style={{ fontSize: 18, fontFamily: "Raleway_600SemiBold", paddingLeft: 10 }}>
                         {item.price + " vnđ"}
                     </Text>
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                         style={{padding: 10, backgroundColor: "yellow"}}
                         onPress={notify}    
                     >
                         <Text>CLICK ME</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 {isBuy ? (
                     <View style={{

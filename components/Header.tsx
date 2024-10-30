@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginHorizontal: 16,
+        marginHorizontal: 15,
         paddingBottom: 1,
         width: "90%"
     },
@@ -112,6 +112,6 @@ const styles = StyleSheet.create({
     imgBanner: {
         width: 120,
         height: 80,
-        marginRight: -25
+        marginRight: -35
     }
 })

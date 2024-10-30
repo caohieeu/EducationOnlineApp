@@ -1,9 +1,11 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { Button, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import HeaderScreen from '@/components/HeaderScreen'
-import MyVideoPlayer from '@/components/MyVideoPlayer'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
+import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+import { Toast } from 'react-native-toast-notifications'
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const ChatItem = ({ chat }: { chat: Chat }) => {
     return (
@@ -21,11 +23,12 @@ const ChatItem = ({ chat }: { chat: Chat }) => {
                     }}
                     style={{ width: 40, height: 40, borderRadius: 100 }} />
                 <View style={{marginLeft: 10}}>
-                <Text style={{fontWeight: 600}}>
+                <Text style={{fontWeight: 600, color: "#fff"}}>
                     {chat.name}
                 </Text>
                 <Text style={{
                     alignItems: "center",
+                    color: "#fff"
                 }}>
                     {chat.message}
                 </Text>
@@ -80,41 +83,97 @@ export default function StreamRoomScreen() {
             message: "Bài này dễ qué",
         }
     ]
-    const url = "https://d3k01n3i64ka9c.cloudfront.net/66d7f5a1b40af52e9130f798";
+    const videoRef = useRef<Video>(null);
+    const isFullscreenRef = useRef(false);
+    var url = "https://d3k01n3i64ka9c.cloudfront.net/66d7f5a1b40af52e9130f798";
     const [activeButton, setActiveButton] = useState("Detail");
     const [onMic, setOnMic] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const setOrientationToLandscape = async () => {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      };
+    
+      const setOrientationToPortrait = async () => {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+      };
+
+      const handleFullscreenUpdate = (event: any) => {
+        console.log("Fullscreen update event:", event.fullscreenUpdate);
+        
+        if (event.fullscreenUpdate === 1 && !isFullscreen) {
+            console.log("Entering fullscreen");
+            setOrientationToLandscape();
+            setIsFullscreen(true);
+        } else if (event.fullscreenUpdate === 0 && isFullscreen) {
+            console.log("Exiting fullscreen");
+            setOrientationToPortrait();
+            setIsFullscreen(false);
+        }
+    };
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (video) {
+            // video.setOnFullscreenUpdate(handleFullscreenUpdate);
+        }
+    
+        return () => {
+            if (video) {
+                // video.setOnFullscreenUpdate(null); // Hủy đăng ký
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        try {
+            if (videoRef.current) {
+                videoRef.current.playAsync();
+            }
+        } catch (err) {
+            Toast.show("Lỗi khi tải video lên", {
+                type: "error",
+                duration: 1400
+            })
+            console.log(err);
+        }
+    }, [url])
 
     return (
         <View style={{ flex: 1 }}>
-            {/* {videoInfo != "" && videoInfo != null ? (
-        <MyVideoPlayer videoInfo={JSON.stringify(videoInfo)} />
-      ) : (
-        <Text>Video not found</Text>
-      )} */}
-
             <LinearGradient
-                colors={["#E5ECF9", "#F6F7F9"]}
+                colors={["#000000d6", "#000000d6"]}
                 style={{ flex: 1 }}
             >
-                <HeaderScreen titleHeader='Xem video' />
-                <View style={{ height: 230, width: "100%" }}>
-
-                </View>
+                <HeaderScreen titleHeader='Xem video' styleHeader='white' />
+                    <Video
+                    ref={videoRef}
+                    source={{ uri: "https://watching.hightfive.click/hls/quoc/index.m3u8" || "" }}
+                    style={styles.video}
+                    resizeMode={ResizeMode.STRETCH}
+                    useNativeControls
+                    isLooping
+                    onFullscreenUpdate={() => console.log("click full screen")}
+                />
+                {/* <Button title="Fullscreen" onPress={setOrientationToLandscape} />
+                <Button title="Exit Fullscreen" onPress={setOrientationToPortrait} /> */}
                 <View style={{
                     paddingHorizontal: 15
                 }}>
                     <Text style={{
                         fontSize: 24,
                         fontFamily: "Nunito_700Bold",
-                        fontWeight: "bold"
+                        fontWeight: "bold",
+                        marginTop: 20,
+                        color: 'white'
                     }}>
                         {"Video Stream"}
                     </Text>
                     <Text
                         style={{
                             fontFamily: "Nunito_400Regular",
-                            color: "#757575",
-                            marginTop: 15
+                            color: "#fff",
+                            marginTop: 15,
                         }}
                     >
                         {"Đây là video live stream của giảng viên môn học: Lập trình đa nền tảng"}
@@ -124,7 +183,6 @@ export default function StreamRoomScreen() {
                             flexDirection: "row",
                             justifyContent: "center",
                             marginTop: 25,
-                            marginHorizontal: 16,
                             backgroundColor: "#E1E9F8",
                             borderRadius: 50,
                         }}
@@ -209,7 +267,7 @@ export default function StreamRoomScreen() {
                                 asdsad
                             </Text> */}
                             <TouchableOpacity
-                                style={styles.exitRoom}
+                                style={styles.raiseHand}
                                 onPress={() => console.log("Click")}
                             >
                                 <FontAwesome
@@ -224,13 +282,11 @@ export default function StreamRoomScreen() {
                             >
                                 {!onMic ? (
                                     <FontAwesome
-                                        color={"white"}
                                         name='microphone'
                                         size={40}
                                     />
                                 ) : (
                                     <FontAwesome
-                                        color={"white"}
                                         name='microphone-slash'
                                         size={40}
                                     />
@@ -242,7 +298,7 @@ export default function StreamRoomScreen() {
                                 onPress={() => console.log("Click")}
                             >
                                 <FontAwesome
-                                        name='sign-out'
+                                        name='phone'
                                         size={40}
                                     />
                             </TouchableOpacity>
@@ -305,7 +361,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#f04345"
+        backgroundColor: "#fff",
     },
     exitRoom: {
         width: 70,
@@ -319,5 +375,25 @@ const styles = StyleSheet.create({
         marginTop: 50,
         alignItems: "center",
         justifyContent: "center",
-    }
+        backgroundColor: "#ee5550"
+    },
+    raiseHand: {
+        width: 70,
+        height: 70,
+        padding: 10,
+        borderRadius: 50,
+        borderColor: "#575757",
+        borderWidth: 1,
+        flexDirection: "column",
+        alignSelf: "center",
+        marginTop: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff"
+    },
+    video: {
+        width: '100%',
+        height: 230,
+        backgroundColor: 'white'
+    },
 })

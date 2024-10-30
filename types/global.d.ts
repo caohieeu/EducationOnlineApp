@@ -167,3 +167,18 @@ interface Chat {
 interface PaginationResponse<Data> extends PaginationState {
     data: Data;
 }
+
+interface Comment {
+    id: string,
+    cDate: Date,
+    content: string,
+    subUser: {
+      user_id: string,
+      user_name: string,
+      user_avatar: string
+    },
+    like: number,
+    dislike: number,
+    module: string,
+    moduleId: string
+  }
