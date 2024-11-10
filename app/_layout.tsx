@@ -9,12 +9,14 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import useSignalRConnection from '@/hooks/useSignalRConnection';
 import useUser from '@/hooks/useUser';
 import { HubConnection } from '@microsoft/signalr';
+import { LogBox } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export const SignalRContext = createContext<HubConnection | null>(null);
 export default function RootLayout() {
+  LogBox.ignoreAllLogs(true);
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -42,13 +44,17 @@ function RootLayoutNav() {
   React.useEffect(() => {
     if (contextValue) {
       try {
-        contextValue.on("roomRequest", (message: any) => {
+        contextValue.on("roomRequest", (message: RoomRequestModel) => {
           if (message.res) {
-              // Toast.show("Vào phòng thành công", {
-              //     type: "success",
-              //     duration: 1400
-              // })
-              router.push("(routes)/room/stream-room");
+              Toast.show("Vào phòng thành công", {
+                  type: "success",
+                  duration: 1400
+              })
+              router.push({
+                pathname: "(routes)/room/stream-room",
+                params: { roomId: message.roomId }
+              });
+              
             }
       });
       }

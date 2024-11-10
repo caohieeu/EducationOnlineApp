@@ -216,7 +216,7 @@ export default function UploadVideoCourse() {
               _id: videoId,
               title: videoUpload[index].title,
               description: videoUpload[index].description,
-              image_url: videoUpload[index].image_url,
+              image_url: "",
               video_size: videoUpload[index].video_size,
               file_type: videoUpload[index].file_type,
               status: videoUpload[index].status,

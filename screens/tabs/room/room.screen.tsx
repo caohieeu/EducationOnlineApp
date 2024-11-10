@@ -38,14 +38,15 @@ export default function RoomScreen() {
             "Cookie": token?.toString()
         },
     })
-        .then(() => {
+        .then((res) => {
           router.push({
-            //pathname: "(routes)/room/waiting-room"
-            pathname: "(routes)/room/stream-room"
+            pathname: "(routes)/room/waiting-room"
+            // pathname: "(routes)/room/stream-room"
           });
+          console.log(res.data)
         })
         .catch((err) => console.error("Error when join room ", err));
-    //sendMessage()
+    sendMessage()
 }
 
 const sendMessage = () => {

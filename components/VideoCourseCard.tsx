@@ -50,7 +50,7 @@ export default function VideoCourseCard({ item }: { item: VideoCourse }) {
             })}
             style={styles.container}>
             <View style={{ paddingHorizontal: 10 }}>
-                <Image
+                {/* <Image
                     style={{
                         width: wp(86),
                         height: 220,
@@ -59,7 +59,7 @@ export default function VideoCourseCard({ item }: { item: VideoCourse }) {
                         objectFit: "cover",
                     }}
                     source={{ uri: item.thumbnail || "" }}
-                />
+                /> */}
                 <View style={{ width: wp(85) }}>
                     <Text
                         style={{

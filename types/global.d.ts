@@ -182,3 +182,24 @@ interface Comment {
     module: string,
     moduleId: string
   }
+
+interface FormJoinRoomRequestModel {
+    cmd: string;
+    roomKey: string;
+}
+
+interface RoomRequestModel {
+    user_id: string;
+    user_name: string;
+    user_avatar: string;
+    room_id: string;
+    res?: boolean;
+    roomId?: string;
+    roomType: number;
+  }
+
+interface RemoveFromRoomMOdel{
+    roomId : string;
+    userId : string;
+    cmd : string;
+  }

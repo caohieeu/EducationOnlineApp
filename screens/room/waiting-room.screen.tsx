@@ -14,8 +14,10 @@ import {
     Nunito_600SemiBold
 } from "@expo-google-fonts/nunito"
 import MyVideoPlayer from '@/components/MyVideoPlayer';
+import { SignalRContext } from '@/app/_layout';
 
 export default function WaitingRoomScreen() {
+    const connection = React.useContext(SignalRContext);
     let [fontsLoaded, fontError] = useFonts({
         Raleway_700Bold,
         Nunito_400Regular,

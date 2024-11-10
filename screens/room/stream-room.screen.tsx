@@ -6,6 +6,10 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import { Toast } from 'react-native-toast-notifications'
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { router, useLocalSearchParams } from 'expo-router'
+import { SERVER_URI } from '@/utils/uri'
+import axios from 'axios'
+import { useRemoveFromRoom } from '@/hooks/useRemoveFromRoom'
 
 const ChatItem = ({ chat }: { chat: Chat }) => {
     return (
@@ -39,6 +43,11 @@ const ChatItem = ({ chat }: { chat: Chat }) => {
 }
 
 export default function StreamRoomScreen() {
+    const { roomId } = useLocalSearchParams();
+    const { mutate: removeUser } = useRemoveFromRoom();
+    const [urlVideo, setUrlVideo] = useState("");
+    const [room, setRoom] = useState(null);
+
     const chats: Chat[] = [
         {
             id: "123",
@@ -85,7 +94,6 @@ export default function StreamRoomScreen() {
     ]
     const videoRef = useRef<Video>(null);
     const isFullscreenRef = useRef(false);
-    var url = "https://d3k01n3i64ka9c.cloudfront.net/66d7f5a1b40af52e9130f798";
     const [activeButton, setActiveButton] = useState("Detail");
     const [onMic, setOnMic] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -112,19 +120,50 @@ export default function StreamRoomScreen() {
         }
     };
 
+    const GetRooomDetail = async () => {
+        await axios.get(`${SERVER_URI}/api/Room/${roomId}`)
+        .then((res) => {
+            setUrlVideo(`http://10.0.2.2:8888/hls/${res.data.entity.room.videoUrl}/index.m3u8`);
+            setRoom(res.data.entity.room)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+    
+    const EndCallHandle = async () => {
+        const value: RemoveFromRoomMOdel = {
+          roomId: room?.roomKey,
+          userId: "",
+          cmd: "",
+        };
+    
+        await removeUser(value, {
+          onSuccess: async (response: any) => {
+            if (response == true) {
+              await videoRef.current?.stopAsync()
+              console.log("Bạn đã rời khỏi phòng");
+              router.push("/");
+            }
+          },
+        });
+      };
+
     useEffect(() => {
+        GetRooomDetail();
         const video = videoRef.current;
-        if (video) {
-            // video.setOnFullscreenUpdate(handleFullscreenUpdate);
-        }
+        // if (video) {
+        //     video.setOnFullscreenUpdate(handleFullscreenUpdate);
+        // }
     
         return () => {
-            if (video) {
-                // video.setOnFullscreenUpdate(null); // Hủy đăng ký
-            }
+            console.log("Component Unmount")
+            // if (video) {
+            //     video.setOnFullscreenUpdate(null); // Hủy đăng ký
+            // }
         };
     }, []);
-
+    
     useEffect(() => {
         try {
             if (videoRef.current) {
@@ -137,7 +176,7 @@ export default function StreamRoomScreen() {
             })
             console.log(err);
         }
-    }, [url])
+    }, [urlVideo])
 
     return (
         <View style={{ flex: 1 }}>
@@ -148,7 +187,7 @@ export default function StreamRoomScreen() {
                 <HeaderScreen titleHeader='Xem video' styleHeader='white' />
                     <Video
                     ref={videoRef}
-                    source={{ uri: "https://watching.hightfive.click/hls/quoc/index.m3u8" || "" }}
+                    source={{ uri: urlVideo || "" }}
                     style={styles.video}
                     resizeMode={ResizeMode.STRETCH}
                     useNativeControls
@@ -275,27 +314,10 @@ export default function StreamRoomScreen() {
                                         size={40}
                                     />
                             </TouchableOpacity>
-
-                            <TouchableOpacity
-                                style={styles.micro}
-                                onPress={() => setOnMic(!onMic)}
-                            >
-                                {!onMic ? (
-                                    <FontAwesome
-                                        name='microphone'
-                                        size={40}
-                                    />
-                                ) : (
-                                    <FontAwesome
-                                        name='microphone-slash'
-                                        size={40}
-                                    />
-                                )}
-                            </TouchableOpacity>
                             
                             <TouchableOpacity
                                 style={styles.exitRoom}
-                                onPress={() => console.log("Click")}
+                                onPress={EndCallHandle}
                             >
                                 <FontAwesome
                                         name='phone'
