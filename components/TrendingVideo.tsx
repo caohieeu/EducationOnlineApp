@@ -18,12 +18,11 @@ import {
     Nunito_700Bold, 
     Nunito_600SemiBold 
   } from "@expo-google-fonts/nunito"
-  import useCourses from '@/hooks/useCourses';
+  import {  } from '@/hooks/useCourses';
   import VideoCard from './VideoCard';
   import { commonStyles } from '@/styles/common';
   import { useQueryRequest } from '@/utils/useQueryRequest';
-  import { useGetListVideo } from '@/hooks/useGetListVideo';
-import { useGetRecommendVideos } from '@/hooks/useGetRecommendVideos';
+import { useGetTrendingVideos } from '@/hooks/useGetTrendingVideos';
 import { router } from 'expo-router';
   
   export default function RecomendVideo({type} : {type:string}) {
@@ -41,7 +40,7 @@ import { router } from 'expo-router';
       page: 1,
     });
     
-    const { data: videos, refetch, isLoading } = useGetRecommendVideos(queryString);
+    const { data: videos, refetch, isLoading } = useGetTrendingVideos(queryString);
     return (
       <>
         {isLoading ? (
@@ -59,7 +58,7 @@ import { router } from 'expo-router';
               justifyContent: "space-between",
             }}
           >
-            <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold"}}>Video đề xuất</Text>
+            <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold"}}>Video xu hướng</Text>
             <TouchableOpacity
               onPress={() => router.push({
                 pathname: "(routes)/video/all-video",

@@ -78,7 +78,9 @@ function RootLayoutNav() {
           <Stack.Screen name="(routes)/upload/upload-course" />
           <Stack.Screen name="(routes)/upload/upload-video-course" />
           <Stack.Screen name="(routes)/video/index" />
+          <Stack.Screen name="(routes)/video/all-video" />
           <Stack.Screen name="(routes)/course/course-detail" />
+          <Stack.Screen name="(routes)/course/all-course" />
           <Stack.Screen name="(routes)/room/waiting-room" />
           <Stack.Screen name="(routes)/room/stream-room" />
         </Stack>

@@ -18,11 +18,11 @@ import {
   Nunito_700Bold, 
   Nunito_600SemiBold 
 } from "@expo-google-fonts/nunito"
-import useCourses from '@/hooks/useCourses';
 import VideoCard from './VideoCard';
 import { commonStyles } from '@/styles/common';
 import { useQueryRequest } from '@/utils/useQueryRequest';
 import { useGetListVideo } from '@/hooks/useGetListVideo';
+import { router } from 'expo-router';
 
 export default function AllVideo() {
   const flatlistref = useRef(null);
@@ -39,7 +39,6 @@ export default function AllVideo() {
     page: 1,
   });
 
-  const { courses, loading, error } = useCourses(1);
   const { data: videos, refetch, isLoading } = useGetListVideo(queryString);
   return (
     <>
@@ -58,7 +57,11 @@ export default function AllVideo() {
           }}
         >
           <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold"}}>Khóa học nổi bật</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push({
+              pathname: "(routes)/video/all-video",
+          })}
+          >
             <Text
               style={{fontSize: 15, color: "#2467EC", fontFamily: "Nunito_600SemiBold"}}
             >

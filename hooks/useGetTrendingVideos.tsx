@@ -8,7 +8,7 @@ const endpoint = async (
   query?: string,
 ): Promise<PaginationResponse<VideoSingle[]>> => {
   const token = await AsyncStorage.getItem("access_token");
-  const response = await axiosInstance.get(`/api/Video/GetRecommendVideos?${query || ""}`, {
+  const response = await axiosInstance.get(`/api/Video/GetTrendingVideo?${query || ""}`, {
     headers: {
       Cookie: token?.toString(), 
     },
@@ -17,19 +17,19 @@ const endpoint = async (
   return response.data as PaginationResponse<VideoSingle[]>;
 };
 
-const useGetRecommendVideos = (query?: string) => {
+const useGetTrendingVideos = (query?: string) => {
   return useQuery<PaginationResponse<VideoSingle[]>, Error>(
-    ["get-video", query],
+    ["get-trending-video", query],
     () => endpoint(query),
     {
       onSuccess: () => {
         console.log("API call successful");
       },
       onError: (error: Error) => {
-        console.error("API recommend failed:", error);
+        console.error("API trending failed:", error);
       },
     },
   );
 };
 
-export { useGetRecommendVideos };
+export { useGetTrendingVideos };

@@ -38,6 +38,18 @@ const CommentSection: React.FC<{ moduleId: string }> = ({ moduleId }) => {
     }
   };
 
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date();
+    const secondsAgo = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (secondsAgo < 60) return `${secondsAgo} giây trước`;
+    const minutesAgo = Math.floor(secondsAgo / 60);
+    if (minutesAgo < 60) return `${minutesAgo} phút trước`;
+    const hoursAgo = Math.floor(minutesAgo / 60);
+    if (hoursAgo < 24) return `${hoursAgo} giờ trước`;
+    const daysAgo = Math.floor(hoursAgo / 24);
+    return `${daysAgo} ngày trước`;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bình luận</Text>
@@ -54,7 +66,7 @@ const CommentSection: React.FC<{ moduleId: string }> = ({ moduleId }) => {
               <View style={styles.commentContentContainer}>
                 <Text style={styles.commentUser}>{comment.subUser.user_name}</Text>
                 <Text style={styles.commentContent}>{comment.content}</Text>
-                <Text style={styles.commentDate}>{new Date(comment.cDate).toLocaleDateString()}</Text>
+                <Text style={styles.commentDate}>{formatTimeAgo(new Date(comment.cDate))}</Text>
                 <View style={styles.likeDislikeContainer}>
                   <Text>{comment.like} 👍</Text>
                   <Text>{comment.dislike} 👎</Text>
@@ -96,7 +108,7 @@ const styles = StyleSheet.create({
   noComments: { color: '#999', fontStyle: 'italic' },
   inputContainer: { flexDirection: 'column', marginTop: 12 },
   input: { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4 },
-  button: { alignSelf: 'flex-end', marginTop: 8, backgroundColor: '#007BFF', paddingVertical: 4, paddingHorizontal: 12, borderRadius: 4 },
+  button: { alignSelf: 'flex-end', marginTop: 8, backgroundColor: '#007BFF', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4 },
   buttonText: { color: '#fff', fontWeight: 'bold' },
 });
 

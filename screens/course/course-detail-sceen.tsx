@@ -17,6 +17,7 @@ import {
 } from "@expo-google-fonts/nunito"
 import { Ionicons } from '@expo/vector-icons'
 import VideoCourseCard from '@/components/VideoCourseCard'
+import CommentSection from '@/components/CommentSection'
 
 export default function CourseDetailScreen() {
 
@@ -181,18 +182,18 @@ export default function CourseDetailScreen() {
                 paddingVertical: 10,
                 paddingHorizontal: 42,
                 backgroundColor:
-                  activeButton === "Reviews" ? "#2467EC" : "transparent",
-                borderRadius: activeButton === "Reviews" ? 50 : 0,
+                  activeButton === "Comments" ? "#2467EC" : "transparent",
+                borderRadius: activeButton === "Comments" ? 50 : 0,
               }}
-              onPress={() => setActiveButton("Reviews")}
+              onPress={() => setActiveButton("Comments")}
             >
               <Text
                 style={{
-                  color: activeButton === "Reviews" ? "#fff" : "#000",
+                  color: activeButton === "Comments" ? "#fff" : "#000",
                   fontFamily: "Nunito_600SemiBold",
                 }}
               >
-                Đánh giá
+                Bình luận
               </Text>
             </TouchableOpacity>
           </View>
@@ -232,6 +233,9 @@ export default function CourseDetailScreen() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({item}) => <VideoCourseCard item={item} />}
               />
+          )}
+          {activeButton == "Comments" && (
+            <CommentSection moduleId={course?._id || 'defaultModuleId'} />
           )}
         </View>
       </ScrollView>

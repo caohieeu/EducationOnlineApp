@@ -29,7 +29,21 @@ export default function VideoScreen() {
     videoObj = JSON.parse(videoObj.toString());
     setVideo(videoObj);
   }, [])
-  
+
+  const formatUploadDate = (uploadDate: string) => {
+    const now = new Date();
+    const videoDate = new Date(uploadDate);
+    const secondsAgo = Math.floor((now.getTime() - videoDate.getTime()) / 1000);
+
+    if (secondsAgo < 60) return `${secondsAgo} giây trước`;
+    const minutesAgo = Math.floor(secondsAgo / 60);
+    if (minutesAgo < 60) return `${minutesAgo} phút trước`;
+    const hoursAgo = Math.floor(minutesAgo / 60);
+    if (hoursAgo < 24) return `${hoursAgo} giờ trước`;
+    const daysAgo = Math.floor(hoursAgo / 24);
+    return `${daysAgo} ngày trước`;
+  };
+
   if(!fontsLoaded && !fontError) {
     return null;
   }
@@ -59,6 +73,17 @@ export default function VideoScreen() {
             }}>
               {video?.title}
             </Text>
+            
+            {/* Hiển thị lượt xem và ngày đăng */}
+            <Text style={{
+              fontFamily: "Nunito_400Regular",
+              color: "#757575",
+              marginTop: 10
+            }}>
+              {`${video?.view || 0} lượt xem • ${formatUploadDate(video?.time instanceof Date ? video.time.toISOString() : video?.time || '')}`}
+            </Text>
+
+            {/* Mô tả video */}
             <Text
               style={{
                 fontFamily: "Nunito_400Regular",
@@ -66,7 +91,7 @@ export default function VideoScreen() {
                 marginTop: 15
               }}
             >
-               {video?.description}
+              {video?.description}
             </Text>
 
             <RecomendVideo type='vertical' />

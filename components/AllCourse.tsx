@@ -11,9 +11,11 @@ import {
   Nunito_700Bold, 
   Nunito_600SemiBold 
 } from "@expo-google-fonts/nunito"
-import useCourses from '@/hooks/useCourses';
+import { useCourses } from '@/hooks/useCourses';
 import CourseCard from './CourseCard';
 import { commonStyles } from '@/styles/common';
+import { useQueryRequest } from '@/utils/useQueryRequest';
+import { router } from 'expo-router';
 
 export default function AllCourse() {
   const flatlistref = useRef(null);
@@ -25,7 +27,12 @@ export default function AllCourse() {
     Nunito_600SemiBold
 })
 
-  const { courses, loading, error } = useCourses(1);
+  const { queryString, updateQueryState } = useQueryRequest({
+    pageSize: 5,
+    page: 1,
+  });
+
+  const { data: courses, refetch, isLoading } = useCourses(queryString);
 
   return (
     <>
@@ -38,7 +45,11 @@ export default function AllCourse() {
           }}
         >
           <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold"}}>Khóa học nổi bật</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push({
+              pathname: "(routes)/course/all-course",
+          })}
+          >
             <Text
               style={{fontSize: 15, color: "#2467EC", fontFamily: "Nunito_600SemiBold"}}
             >
@@ -48,7 +59,7 @@ export default function AllCourse() {
         </View>
         <FlatList 
           ref={flatlistref}
-          data={courses}
+          data={courses?.data}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item._id}
