@@ -18,7 +18,6 @@ import {
     Nunito_700Bold, 
     Nunito_600SemiBold 
   } from "@expo-google-fonts/nunito"
-  import useCourses from '@/hooks/useCourses';
   import VideoCard from './VideoCard';
   import { commonStyles } from '@/styles/common';
   import { useQueryRequest } from '@/utils/useQueryRequest';
@@ -37,11 +36,11 @@ import { router } from 'expo-router';
   })
   
     const { queryString, updateQueryState } = useQueryRequest({
-      pageSize: 20,
+      pageSize: 10,
       page: 1,
     });
     
-    const { data: videos, refetch, isLoading } = useGetRecommendVideos(queryString);
+    const { data: videos, refetch, isLoading } = useGetListVideo(queryString);
     return (
       <>
         {isLoading ? (

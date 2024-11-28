@@ -8,7 +8,7 @@ const endpoint = async (
   query?: string,
 ): Promise<PaginationResponse<VideoSingle[]>> => {
   const token = await AsyncStorage.getItem("access_token");
-  const response = await axiosInstance.get(`/api/Video?${query || ""}`, {
+  const response = await axiosInstance.get(`/api/Video/GetVideoOfCurrentUser?${query || ""}`, {
     headers: {
       Cookie: token?.toString(), 
     },
@@ -17,14 +17,13 @@ const endpoint = async (
   return response.data as PaginationResponse<VideoSingle[]>;
 };
 
-const useGetListVideo = (query?: string) => {
+const useGetListVideoOfCurrentUser = (query?: string) => {
   return useQuery<PaginationResponse<VideoSingle[]>, Error>(
-    ["get-video", query],
+    ["get-video-current-user", query],
     () => endpoint(query),
     {
-      keepPreviousData: true,
       onSuccess: () => {
-        console.log("API call get list video successful");
+        console.log("API call get list video of current user successful");
       },
       onError: (error: Error) => {
         console.error("API call failed:", error);
@@ -33,4 +32,4 @@ const useGetListVideo = (query?: string) => {
   );
 };
 
-export { useGetListVideo };
+export { useGetListVideoOfCurrentUser };

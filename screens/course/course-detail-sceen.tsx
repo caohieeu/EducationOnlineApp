@@ -235,7 +235,9 @@ export default function CourseDetailScreen() {
               />
           )}
           {activeButton == "Comments" && (
-            <CommentSection moduleId={course?._id || 'defaultModuleId'} />
+            <View style={{marginTop: 20, marginLeft: 15, marginRight: 5}}>
+              <CommentSection moduleId={course?._id || 'defaultModuleId'} />
+            </View>
           )}
         </View>
       </ScrollView>

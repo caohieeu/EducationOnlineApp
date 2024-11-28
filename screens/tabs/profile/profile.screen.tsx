@@ -23,6 +23,8 @@ import useFollower from '@/hooks/useFollower';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import useFollowing from '@/hooks/useFollowing';
 import { Toast } from 'react-native-toast-notifications';
+import { axiosInstance } from '@/utils/AxiosConfig';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
     const { userId } = useLocalSearchParams();
@@ -40,6 +42,8 @@ export default function ProfileScreen() {
     const { currentUser, loading } = useCurrentUser(userId);
     const [isFollow, setIsFollow] = useState(false);
     const [followingNumber, setFollowingNumber] = useState<Follow[]>([]);
+    const [image, setImage] = useState("");
+    const [loadingImage, setLoadingImage] = useState(false);
 
     useEffect(() => {
         const isUserFollowed = follower?.some(
@@ -65,12 +69,9 @@ export default function ProfileScreen() {
     const logoutHandler = async () => {
         try {
             await AsyncStorage.multiRemove(["access_token", "user_id"]);
+            await axiosInstance.post('/api/User/logout')
         }
         catch {
-            Toast.show("Đăng xuất lỗi", {
-                type: 'error',
-                duration: 1400,
-            });
         }
         finally {
             router.push('/(routes)/auth/signin');
@@ -79,10 +80,9 @@ export default function ProfileScreen() {
 
     const onFollow = async () => {
         try {
-            console.log(currentUser?.id)
             const token = await AsyncStorage.getItem("access_token");
             await axios.post(`${SERVER_URI}/api/Follow/PostFollow`, {
-                user_id: currentUser?.id
+                userId: userId
             }, {
                 headers: {
                     "Cookie": token?.toString()
@@ -131,6 +131,45 @@ export default function ProfileScreen() {
         }
     };
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+            base64: true,
+        });
+    
+        if(!result.canceled) {
+          setLoadingImage(true);
+          const uriParts = result.assets[0].uri.split('/');
+          const fileName = uriParts[uriParts.length - 1];
+          const fileType = `image/${fileName.split('.').pop()}`;
+          const formData = new FormData();
+          formData.append('file', {
+            uri: result.assets[0].uri,
+            name: fileName,
+            type: fileType,
+          });
+          await axios.post("https://api.microlap.vn/upload/image", formData, {
+            headers: {  
+              'Content-Type': 'multipart/form-data',
+            }
+          })
+          .then((res) => {
+            setImage(res.data.data.image_url);
+            setLoadingImage(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setImage("https://imexpert.au/wp-content/uploads/2023/08/image-not-found.png");
+            setLoadingImage(false);
+          })
+        }
+        else {
+            alert('Bạn chưa chọn hình ảnh nào');
+        }
+      };
+
     return (
         <>
             {loading ? (
@@ -150,6 +189,7 @@ export default function ProfileScreen() {
                                     }}
                                     style={{ width: 80, height: 80, borderRadius: 100 }} />
                                 <TouchableOpacity
+                                    onPress={pickImage}
                                     style={styles.iconEditImage}
                                 >
                                     <Ionicons
@@ -328,7 +368,57 @@ export default function ProfileScreen() {
                                             <Text
                                                 style={{ color: "#575757", fontFamily: "Nunito_400Regular" }}
                                             >
-                                                Tất cả khỏa hoc của bạn
+                                                Tất cả khóa học của bạn
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity>
+                                        <AntDesign name="right" size={26} color={"#CBD5E0"} />
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() => router.push("(routes)/video/video-current-user")}
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        marginBottom: 20
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            columnGap: 30
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                borderWidth: 2,
+                                                borderColor: "#dde2ec",
+                                                padding: 15,
+                                                borderRadius: 100,
+                                                width: 55,
+                                                height: 55
+                                            }}
+                                        >
+                                            <MaterialCommunityIcons
+                                                style={{ alignSelf: "center" }}
+                                                name="video-outline"
+                                                size={20}
+                                                color={"black"} />
+                                        </View>
+                                        <View>
+                                            <Text
+                                                style={{ fontSize: 16, fontFamily: "Nunito_700Bold" }}
+                                            >
+                                                Video của bạn
+                                            </Text>
+                                            <Text
+                                                style={{ color: "#575757", fontFamily: "Nunito_400Regular" }}
+                                            >
+                                                Tất cả video của bạn
                                             </Text>
                                         </View>
                                     </View>

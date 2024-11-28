@@ -113,14 +113,14 @@ export default function UploadCourse() {
       name: fileName,
       type: fileType,
     });
-    await axios.post("https://api.microlap.vn/upload/image", formData, {
+    await axios.post("https://upload.hightfive.click/upload/", formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
     })
       .then((res) => {
-        setThumbnailCourse(res.data.data.image_url);
-        setCourseUpload({...courseUpload, courseImage: res.data.data.image_url})
+        setThumbnailCourse(res.data.url);
+        setCourseUpload({...courseUpload, courseImage: res.data.url})
       })
       .catch((err) => {
         console.log(err);

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   noComments: { color: '#999', fontStyle: 'italic' },
   inputContainer: { flexDirection: 'column', marginTop: 12 },
   input: { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4 },
-  button: { alignSelf: 'flex-end', marginTop: 8, backgroundColor: '#007BFF', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4 },
+  button: { alignSelf: 'flex-end', marginTop: 8, backgroundColor: '#007BFF', paddingVertical: 10, paddingHorizontal: 15, borderRadius: 4 },
   buttonText: { color: '#fff', fontWeight: 'bold' },
 });
 

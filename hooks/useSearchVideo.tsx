@@ -2,27 +2,21 @@
 
 import { useQuery } from "react-query";
 import { axiosInstance } from "@/utils/AxiosConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const endpoint = async (
   query?: string,
+  body?: Record<string, any>,
 ): Promise<PaginationResponse<VideoSingle[]>> => {
-  const token = await AsyncStorage.getItem("access_token");
-  const response = await axiosInstance.get(`/api/Video?${query || ""}`, {
-    headers: {
-      Cookie: token?.toString(), 
-    },
-  });
+  const response = await axiosInstance.post(`/api/Video/SearchVideo?${query || ""}`, body);
 
   return response.data as PaginationResponse<VideoSingle[]>;
 };
 
-const useGetListVideo = (query?: string) => {
+const useSearchVideo = (query?: string, body?: Record<string, any>) => {
   return useQuery<PaginationResponse<VideoSingle[]>, Error>(
-    ["get-video", query],
-    () => endpoint(query),
+    ["get-video-search", query, body],
+    () => endpoint(query, body),
     {
-      keepPreviousData: true,
       onSuccess: () => {
         console.log("API call get list video successful");
       },
@@ -33,4 +27,4 @@ const useGetListVideo = (query?: string) => {
   );
 };
 
-export { useGetListVideo };
+export { useSearchVideo };

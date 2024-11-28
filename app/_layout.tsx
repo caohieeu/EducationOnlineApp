@@ -40,30 +40,29 @@ function RootLayoutNav() {
   const contextValue = useSignalRConnection("edunimohub", {
     userId: user?.id,
   });
-
+  
   React.useEffect(() => {
     if (contextValue) {
-      try {
+        contextValue.off("roomRequest");
+        
         contextValue.on("roomRequest", (message: RoomRequestModel) => {
-          if (message.res) {
-              Toast.show("Vào phòng thành công", {
-                  type: "success",
-                  duration: 1400
-              })
-              router.push({
-                pathname: "(routes)/room/stream-room",
-                params: { roomId: message.roomId }
-              });
-              
+            if (message.res) {
+                Toast.show("Vào phòng thành công", {
+                    type: "success",
+                    duration: 1400
+                });
+                router.push({
+                    pathname: "(routes)/room/stream-room",
+                    params: { roomId: message.roomId }
+                });
             }
-      });
-      }
-      catch {
-        console.log("Lỗi xảy ra khi nhận message từ server")
-      }
-        //onJoinRoomRequest()
+        });
     }
+    return () => {
+        contextValue?.off("roomRequest");
+    };
 }, [contextValue]);
+
 
   return <>{isLogged ? <View></View> : (
     <QueryClientProvider client={new QueryClient()}>
@@ -85,6 +84,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(routes)/upload/upload-video-course" />
           <Stack.Screen name="(routes)/video/index" />
           <Stack.Screen name="(routes)/video/all-video" />
+          <Stack.Screen name="(routes)/video/video-current-user" />
           <Stack.Screen name="(routes)/course/course-detail" />
           <Stack.Screen name="(routes)/course/all-course" />
           <Stack.Screen name="(routes)/room/waiting-room" />

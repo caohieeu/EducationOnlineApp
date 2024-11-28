@@ -28,17 +28,18 @@ export default function Header() {
     if(!fontsLoaded && !fontError) {
         return null;
     }
-
+    
     return (
     <View style={styles.container}>
         <View style={styles.headerWrapper}>
             <TouchableOpacity>
-                <Image 
-                    source={
-                        user?.avatarUrl ? user.avatarUrl : 
-                        require("@/assets/icons/profile.png")
-                    }
-                    style={styles.image}
+            <Image
+                source={
+                    user?.avatarUrl && typeof user.avatarUrl === 'string' 
+                    ? { uri: user.avatarUrl }
+                    : require("@/assets/icons/profile.png")
+                }
+                style={styles.image}
                 />
             </TouchableOpacity>
             <View>

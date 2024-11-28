@@ -91,7 +91,9 @@ interface VideoSingle {
     statusNum: number,
     videoUrl: string,
     fileType: string,
-    tags: string[]
+    tags: string[],
+    isLike: boolean,
+    isSub: boolean
 }
 
 interface VideoCourse {
@@ -202,4 +204,13 @@ interface RemoveFromRoomMOdel{
     roomId : string;
     userId : string;
     cmd : string;
+  }
+
+interface UpdateUserModel {
+    id: string,
+    userName: string,
+    email: string,
+    dislayName: string,
+    role: string,
+    avatarUrl: string
   }

@@ -1,7 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import Header from '@/components/Header'
 import HeaderScreen from '@/components/HeaderScreen'
 import useCoursesTeacher from '@/hooks/useCoursesTeacher'
 import useUser from '@/hooks/useUser'

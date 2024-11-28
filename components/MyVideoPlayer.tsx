@@ -13,6 +13,7 @@ import {
 } from "@expo-google-fonts/nunito"
 import { Video, ResizeMode } from 'expo-av';
 import { Toast } from 'react-native-toast-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
     let [fontsLoaded, fontError] = useFonts({
@@ -23,8 +24,16 @@ export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
         Nunito_600SemiBold
     })
     const videoRef = useRef<Video>(null);
+    const token = useRef<string>('')
     const [video, setVideo] = useState<VideoSingle>();
     const [loading, setLoading] = useState(true);
+
+    if (videoRef.current) {
+        videoRef.current.stopAsync().then(() => {
+            videoRef.current?.setPositionAsync(0);
+            videoRef.current?.playAsync();
+        });
+    }
 
     useEffect(() => {
         var jsonObject = JSON.parse(videoInfo);
@@ -32,6 +41,7 @@ export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
 
         try {
             if (videoRef.current) {
+                videoRef.current.setPositionAsync(0);
                 videoRef.current.playAsync();
             }
             setLoading(false);
@@ -47,7 +57,7 @@ export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
     if(!fontsLoaded && !fontError) {
         return null;
     }
-
+    console.log(video?.videoUrl)
     return (
         <View>
             {loading ? (
@@ -56,11 +66,18 @@ export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
                 video && (
                     <Video
                         ref={videoRef}
-                        source={{ uri: video?.videoUrl || "" }}
+                        source={{ 
+                            uri: (video.fileType == "hls" ? video.videoUrl + "/index.m3u8" : video.videoUrl) || "",
+                            ...(video.fileType === "hls" && { type: 'm3u8' }),
+                         }}
                         style={styles.video}
                         useNativeControls
                         resizeMode={ResizeMode.CONTAIN}
                         isLooping
+                        onError={(err) => {
+                            console.error('Video Error: ', err);
+                            Toast.show('Lỗi khi tải video lên', { type: 'error' });
+                          }}
                     />
                 )
             )}

@@ -162,13 +162,13 @@ export default function UploadVideoCourse() {
               name: fileName,
               type: fileType1,
             });
-            await axios.post("https://api.microlap.vn/upload/image", formData, {
+            await axios.post("https://upload.hightfive.click/upload/", formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
               }
             })
               .then((res) => {
-                initVideoUpload(res.data.data.image_url, videos[i].video_size, videos[i].fileType);
+                initVideoUpload(res.data.url, videos[i].video_size, videos[i].fileType);
               })
               .catch((err) => {
                 initVideoUpload(defaultImage, videos[i].video_size, videos[i].fileType);
@@ -349,13 +349,13 @@ export default function UploadVideoCourse() {
         name: fileName,
         type: fileType,
       });
-      await axios.post("https://api.microlap.vn/upload/image", formData, {
+      await axios.post("https://upload.hightfive.click/upload/", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
       })
         .then((res) => {
-          updateVideoCourse('image_url', res.data.data.image_url, pos)
+          updateVideoCourse('image_url', res.data.url, pos)
           setLoadingImage(false);
         })
         .catch((err) => {

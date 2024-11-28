@@ -37,8 +37,9 @@ import { axiosInstance } from "@/utils/AxiosConfig";
           ["get-courses", query],
           () => endpoint(query),
           {
+            keepPreviousData: true,
             onSuccess: () => {
-              console.log("API call successful");
+              console.log("API call get courses successful");
             },
             onError: (error: Error) => {
               console.error("API get courses failed:", error);

@@ -24,8 +24,13 @@ import { useQueryRequest } from '@/utils/useQueryRequest';
 import { useGetListVideo } from '@/hooks/useGetListVideo';
 import { LinearGradient } from 'expo-linear-gradient';
 import HeaderScreen from '@/components/HeaderScreen';
+import { useLocalSearchParams } from 'expo-router';
+import { useSearchVideo } from '@/hooks/useSearchVideo';
+import { axiosInstance } from '@/utils/AxiosConfig';
 
 export default function AllVideoScreen() {
+    const { search } = useLocalSearchParams();
+
     const flatlistRef = useRef(null);
     const [activeCategory, setActiveCategory] = useState('All');
     const [page, setPage] = useState(1);
@@ -39,12 +44,26 @@ export default function AllVideoScreen() {
         Nunito_600SemiBold,
     });
 
-    const { queryString, updateQueryState } = useQueryRequest({
+    var { queryString, updateQueryState } = useQueryRequest({
         pageSize: 20,
-        page,
+        page
     });
+    
+    // if(search != null) {
+    //     queryString += `&Search=${search}`
+    // }
 
-    const { data: videos, isFetched, isLoading, error } = useGetListVideo(queryString);
+    const convertToArray = () => {
+        if (!search) return {};
+        const tagsArray = search
+            .split(" ")
+            .map((item: string) => item.replace("#", ""));
+        return tagsArray;
+    };
+    console.log(convertToArray())
+    const { data: videos, isFetched, isLoading, error } = search
+        ? useSearchVideo(queryString, convertToArray())
+        : useGetListVideo(queryString);
 
     const fetchNextData = () => {
         if (!isLoading && isFetched) {
@@ -63,7 +82,8 @@ export default function AllVideoScreen() {
         <LinearGradient colors={["#E5ECF9", "#F6F7F9"]} style={styles.container}>
             <HeaderScreen titleHeader="All Videos" />
 
-            <View style={styles.categoryFilterContainer}>
+            {!search && (
+                <View style={styles.categoryFilterContainer}>
                 {['All', 'Popular', 'New', 'Trending'].map((category) => (
                     <TouchableOpacity
                         key={category}
@@ -89,6 +109,21 @@ export default function AllVideoScreen() {
                     </TouchableOpacity>
                 ))}
             </View>
+            )}
+
+                
+            {search && (
+                <Text 
+                style={{
+                    fontSize: 18,
+                    marginHorizontal: 22,
+                    fontWeight: 700,
+                    paddingBottom: 20
+                }}
+            >
+                Tìm kiếm cho: {search}
+            </Text>
+            )}
 
             {
                 activeCategory === 'All' ? (

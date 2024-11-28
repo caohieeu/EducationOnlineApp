@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 
 import { 
@@ -12,8 +12,10 @@ import {
     Nunito_700Bold, 
     Nunito_600SemiBold 
   } from "@expo-google-fonts/nunito"
+import { router } from 'expo-router'
 
 export default function SearchInput() {
+    const [search, setSearch] = useState("")
     let [fontsLoaded, fontError] = useFonts({
         Raleway_700Bold,
         Nunito_400Regular,
@@ -33,8 +35,15 @@ export default function SearchInput() {
             style={[styles.input, {fontFamily: "Nunito_700Bold"}]}
             placeholder="Tìm kiếm"
             placeholderTextColor={"#C67cc"}
+            value={search}
+            onChangeText={(text) => setSearch(text)}
         />
-        <TouchableOpacity style={styles.searchIconContainer}>
+        <TouchableOpacity
+            onPress={() => router.push({
+                pathname: "(routes)/video/all-video",
+                params: { search: search }
+            })}
+            style={styles.searchIconContainer}>
             <AntDesign 
                 name="search1"
                 size={20}
