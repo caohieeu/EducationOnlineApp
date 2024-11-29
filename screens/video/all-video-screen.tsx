@@ -26,7 +26,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import HeaderScreen from '@/components/HeaderScreen';
 import { useLocalSearchParams } from 'expo-router';
 import { useSearchVideo } from '@/hooks/useSearchVideo';
-import { axiosInstance } from '@/utils/AxiosConfig';
 
 export default function AllVideoScreen() {
     const { search } = useLocalSearchParams();
@@ -49,25 +48,13 @@ export default function AllVideoScreen() {
         page
     });
     
-    // if(search != null) {
-    //     queryString += `&Search=${search}`
-    // }
-
-    const convertToArray = () => {
-        if (!search) return {};
-        const tagsArray = search
-            .split(" ")
-            .map((item: string) => item.replace("#", ""));
-        return tagsArray;
-    };
-    console.log(convertToArray())
     const { data: videos, isFetched, isLoading, error } = search
-        ? useSearchVideo(queryString, convertToArray())
+        ? useSearchVideo(queryString, search)
         : useGetListVideo(queryString);
 
     const fetchNextData = () => {
-        if (!isLoading && isFetched) {
-            setPage(prevPage => prevPage + 1);
+        if (!isLoading && isFetched && videos?.data?.length) {
+            setPage((prevPage) => prevPage + 1);
             updateQueryState({ page: page + 1 });
         }
     };

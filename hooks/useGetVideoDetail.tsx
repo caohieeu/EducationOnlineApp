@@ -1,41 +1,47 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'react-native-toast-notifications';
 
-export default function useGetVideoDetail(videoId:string) {
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+export default function useGetVideoDetail(idVideo: string) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [videoInfor, setVideoInfor] = useState<VideoSingle | null>(null);
 
-    useEffect(() => {
-        const subscription = async () => {
-            const token = await AsyncStorage.getItem("access_token");
-            if(videoId && token != "") {
-                console.log(`${SERVER_URI}/api/Video/getVideo/${videoId}`)
-            await axios
-                .get(`${SERVER_URI}/api/Video/getVideo/${videoId}`, {
-                    headers: {
-                        "Cookie": token?.toString()
-                    },
-                })
-                .then((res:any) => {
-                    setLoading(false);
-                    console.log(res.data)
-                })
-                .catch((error:any) => {
-                    setError(error.message);
-                    setLoading(false);
-                    console.log("Error fetch get video detail: " + error);
-                    Toast.show('Error fetch get video detail', {
-                        type: 'error',
-                        duration: 1400,
-                    });
-                })
-            }
+  useEffect(() => {
+    const fetchVideoDetail = async () => {
+      if (!idVideo) {
+        setLoading(false);
+        setError("Video ID không hợp lệ.");
+        return;
+      }
+
+      setLoading(true); 
+
+      try {
+        const token = await AsyncStorage.getItem("access_token");
+        if (!token) {
+          throw new Error("Token không tồn tại.");
         }
-        subscription();
-    }, [videoId])
 
-    return { loading, error }
+        const response = await axios.get(`${SERVER_URI}/api/Video/getVideo/${idVideo}`, {
+            headers: {
+              "Cookie": token?.toString(),
+            },
+        });
+        
+        setVideoInfor(response.data);
+      } catch (err: any) {
+        setError(err.message || "Đã xảy ra lỗi khi lấy chi tiết video.");
+        Toast.show(err.message || 'Error fetching video details', { type: 'error', duration: 1400 });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideoDetail();
+  }, [idVideo]);
+
+  return { loading, error, videoInfor };
 }

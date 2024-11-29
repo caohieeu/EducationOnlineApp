@@ -15,6 +15,8 @@ import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosInstance } from '@/utils/AxiosConfig';
+import { FontAwesome, Ionicons } from '@expo/vector-icons'
+import { VideoDecoderProperties } from 'react-native-video';
 
 export default function VideoScreen() {
   let [fontsLoaded, fontError] = useFonts({
@@ -23,53 +25,68 @@ export default function VideoScreen() {
   });
 
   const { videoInfo } = useLocalSearchParams();
-  const [video, setVideo] = useState<VideoSingle>();
-  const { loading, error } = useGetVideoDetail(video?.id || "");
+  const [idVideo, setIdVideo] = useState("");
+  const [video, setVideo] = useState<VideoSingle | null>(null);
+  const { loading, error, videoInfor } = useGetVideoDetail(idVideo || "");
   const [expanded, setExpanded] = useState(false);
+  const [isPress, setIsPress] = useState(false);
   const [isLike, setIsLike] = useState(false);
   const [isLiked, setIsLiked] = useState(false); 
   const [likes, setLikes] = useState(video?.like || 0);
-  // const { likes } = useLike(isLike, video?.id || "")
 
   useEffect(() => {
     if (videoInfo) {
       const videoObj = JSON.parse(JSON.stringify(videoInfo));
-      setVideo(JSON.parse(videoObj.toString()));
+      // setVideo(JSON.parse(videoObj.toString()));
+      var videoJSon = JSON.parse(videoObj.toString());
+      setIdVideo(videoJSon.id);
     }
   }, [videoInfo]);
 
   useEffect(() => {
+    setVideo(videoInfor)
+  }, [idVideo, videoInfor])
+
+  useEffect(() => {
     if (video) {
       setLikes(video.like || 0);
+      setIsLiked(video.isLike)
+      console.log(video);
+      console.log(likes, isLiked)
     }
   }, [video]);
 
   const fetchLikeStatus = async () => {
     const token = await AsyncStorage.getItem("access_token");
-    console.log(`${SERVER_URI}/api/Video/updateVideoLike/${video?.id}?isLike=${isLike}`)
-    await axios
-      .put(`${SERVER_URI}/api/Video/updateVideoLike/${video?.id}?isLike=${isLike}`, {
+    
+    if(!token) {
+      return;
+    }
+      console.log(`${SERVER_URI}/api/Video/updateVideoLike/${video?.id}?isLike=${!isLiked}`)
+      await axios
+      .put(`${SERVER_URI}/api/Video/updateVideoLike/${video?.id}?isLike=${!isLiked}`,
+        null, 
+        {
           headers: {
-              "Cookie": token?.toString()
+            "Cookie": token?.toString(),
           },
+        })
+      .then((res) => {
+        setIsLiked(!isLiked);
+        console.log("Like success")
       })
-      .then((res:any) => {
-        setIsLiked(res.data.IsLike);
-        setLikes(res.data.like);
-      })
-      .catch((error:any) => {
-          console.log("Error like video: " + error);
-      })
-  }
+      .catch((error) => {
+        console.log("Error like video: " + error);
+      });
+  };
 
   const handleLike = () => {
-    if (video?.isLike) {
+    if (isLiked) {
       setLikes((prev) => prev - 1);
     } else {
       setLikes((prev) => prev + 1);
     }
     fetchLikeStatus();
-    setIsLiked(!video?.isLike);
   };
 
   const formatUploadDate = (uploadDate: string) => {
@@ -118,15 +135,18 @@ export default function VideoScreen() {
             <TouchableOpacity
               style={[
                 styles.likeButton,
-                video?.isLike ? styles.likeButtonActive : styles.likeButtonInactive,
+                isLiked ? styles.likeButtonActive : styles.likeButtonInactive,
               ]}
               onPress={handleLike}
             >
-              <Text style={[styles.likeText, isLiked && styles.likeTextActive]}>
-                👍
-              </Text>
+              <FontAwesome
+                style={{marginRight: 10}}
+                name={isLiked ? "thumbs-up" : "thumbs-o-up"}
+                size={24}
+                color={isLiked ? "#0866ff" : "#757575"}
+              />
               <Text style={[styles.likeCount, isLiked && styles.likeTextActive]}>
-                {video?.like}
+                {likes}
               </Text>
             </TouchableOpacity>
           </View>
@@ -243,7 +263,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   likeButtonActive: {
-    backgroundColor: "#FFD700", // Vàng khi đã like
+    backgroundColor: "#F0F0F0",
   },
   likeButtonInactive: {
     backgroundColor: "#F0F0F0", // Xám khi chưa like

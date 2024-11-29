@@ -5,14 +5,14 @@ import { axiosInstance } from "@/utils/AxiosConfig";
 
 const endpoint = async (
   query?: string,
-  body?: Record<string, any>,
+  body?: string,
 ): Promise<PaginationResponse<VideoSingle[]>> => {
-  const response = await axiosInstance.post(`/api/Video/SearchVideo?${query || ""}`, body);
+  const response = await axiosInstance.get(`/api/Video/SearchVideo?title=${body}&${query || ""}`);
 
   return response.data as PaginationResponse<VideoSingle[]>;
 };
 
-const useSearchVideo = (query?: string, body?: Record<string, any>) => {
+const useSearchVideo = (query?: string, body?: string) => {
   return useQuery<PaginationResponse<VideoSingle[]>, Error>(
     ["get-video-search", query, body],
     () => endpoint(query, body),
