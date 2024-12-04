@@ -176,13 +176,13 @@ export default function ProfileDetailScreen() {
                                         <View style={[edtUsername ? styles.editOn : null]}>
                                             <TextInput
                                                 editable={edtUsername}
-                                                onChangeText={(value) => setUserEdt({ ...userEdt, userName: value })}
+                                                // onChangeText={(value) => setUserEdt({ ...userEdt, userName: value })}
                                                 style={[{
                                                     color: "#575757",
                                                     fontFamily: "Nunito_400Regular",
                                                     padding: 0
                                                 }]}
-                                                value={userEdt.userName}
+                                                value={user?.userName}
                                             />
                                         </View>
                                     </View>
