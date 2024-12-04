@@ -12,46 +12,69 @@ import useUser from '@/hooks/useUser'
 import Loader from '@/loader/loader';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import HeaderScreen from '@/components/HeaderScreen';
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import useUpdateUser from '@/hooks/useUpdateUser';
 
 export default function ProfileDetailScreen() {
     const { user, loading } = useUser();
     const [userEdt, setUserEdt] = useState({
         id: "",
-        userName: "",
         email: "",
-        isEmailActive: false,
         dislayName: "",
-        password: "",
-        role: "",
         avatarUrl: "",
-        streamInfo: {
-            last_stream: "",
-            stream_token: "",
-            status: ""
-        }
     });
     const [edtDisplayname, setEdtDisplayname] = useState(false);
     const [edtUsername, setEdtUsername] = useState(false);
     const [edtEmail, setEdtEmail] = useState(false);
+    const { subscription } = useUpdateUser(userEdt);
 
     useEffect(() => {
         setUserEdt({
             ...userEdt,
             id: user?.id,
-            userName: user?.userName,
             email: user?.email,
-            isEmailActive: user?.isEmailActive,
             dislayName: user?.dislayName,
-            password: user?.password,
-            role: user?.role,
             avatarUrl: user?.avatarUrl,
-            streamInfo: {
-                last_stream: user?.streamInfo.last_stream,
-                stream_token: user?.streamInfo.stream_token,
-                status: user?.streamInfo.status
-            }
         });
     }, [user])
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+            base64: true,
+        });
+    
+        if(!result.canceled) {
+          const uriParts = result.assets[0].uri.split('/');
+          const fileName = uriParts[uriParts.length - 1];
+          const fileType = `image/${fileName.split('.').pop()}`;
+          const formData = new FormData();
+          formData.append('file', {
+            uri: result.assets[0].uri,
+            name: fileName,
+            type: fileType,
+          });
+          await axios.post("https://upload.hightfive.click/upload/", formData, {
+            headers: {  
+              'Content-Type': 'multipart/form-data',
+            }
+          })
+          .then((res) => {
+            setUserEdt({...userEdt, avatarUrl: res.data.url});
+          })
+          .catch((err) => {
+            console.log(err);
+            setUserEdt({...userEdt, avatarUrl: "https://imexpert.au/wp-content/uploads/2023/08/image-not-found.png"});
+          })
+        }
+        else {
+            alert('Bạn chưa chọn hình ảnh nào');
+        }
+      };
 
     const hidePassword = (password: string) => {
         var pass = "";
@@ -61,6 +84,10 @@ export default function ProfileDetailScreen() {
         return pass;
     }
 
+    const handleSave = () => {
+        subscription();
+    }
+
     return (
         <>
             {loading ? (
@@ -68,18 +95,20 @@ export default function ProfileDetailScreen() {
             ) : (
                 <LinearGradient
                     colors={["#E5ECF9", "#F6F7F9"]}
-                    style={{ flex: 1, paddingTop: 80 }}
+                    style={{ flex: 1 }}
                 >
+                    <HeaderScreen titleHeader="Thông tin người dùng" />
                     <ScrollView>
                         <View style={{ flexDirection: "row", justifyContent: "center" }}>
                             <View style={{ position: "relative" }}>
                                 <Image
                                     source={{
-                                        uri: user?.avatarUrl ||
+                                        uri: userEdt.avatarUrl ||
                                             "https://res.cloudinary.com/dshp9jnuy/image/upload/v1665822253/avatars/nrxsg8sd9iy10bbsoenn.png"
                                     }}
                                     style={{ width: 100, height: 100, borderRadius: 100 }} />
                                 <TouchableOpacity
+                                    onPress={pickImage}
                                     style={styles.iconEditImage}
                                 >
                                     <Ionicons
@@ -273,7 +302,7 @@ export default function ProfileDetailScreen() {
                                                 fontFamily: "Nunito_400Regular",
                                                 paddingBottom: 0
                                             }]}
-                                            value={hidePassword(userEdt.password)}
+                                            value={hidePassword(user?.password)}
                                         />
                                     </View>
                                 </View>
@@ -283,6 +312,15 @@ export default function ProfileDetailScreen() {
                                     <Ionicons name="create-outline" size={26} />
                                 </TouchableOpacity>
                             </View>
+                        </View>
+
+                        <View style={{ marginHorizontal: 12, marginTop: 20 }}>
+                            <TouchableOpacity
+                                style={styles.saveButton}
+                                onPress={handleSave}
+                            >
+                                <Text style={styles.saveButtonText}>Lưu</Text>
+                            </TouchableOpacity>
                         </View>
                     </ScrollView>
                 </LinearGradient>
@@ -316,5 +354,16 @@ const styles = StyleSheet.create({
     editOn: {
         borderBottomWidth: 1,
         borderBottomColor: "#2467EC"
+    },
+    saveButton: {
+        backgroundColor: "#2467EC",
+        padding: 15,
+        borderRadius: 8,
+        alignItems: "center"
+    },
+    saveButtonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold"
     }
 })

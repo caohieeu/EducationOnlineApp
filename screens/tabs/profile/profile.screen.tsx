@@ -68,13 +68,31 @@ export default function ProfileScreen() {
 
     const logoutHandler = async () => {
         try {
+            const token = await AsyncStorage.getItem("access_token");
+
+            if(token == null) {
+                return;
+            }
+
             await AsyncStorage.multiRemove(["access_token", "user_id"]);
-            await axiosInstance.post('/api/User/logout')
-        }
-        catch {
-        }
-        finally {
+            await axios.post(`${SERVER_URI}/api/User/logout`, null, {
+                headers: {
+                    "Cookie": token?.toString()
+                },
+            })
+            
+            Toast.show("Đăng xuất thành công", {
+                type: "success",
+                duration: 1500
+            })
             router.push('/(routes)/auth/signin');
+        }
+        catch(ex) {
+            console.log(ex);
+            Toast.show("Đăng xuất không thành công", {
+                type: "error",
+                duration: 1500
+            })
         }
     };
 

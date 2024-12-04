@@ -208,9 +208,7 @@ interface RemoveFromRoomMOdel{
 
 interface UpdateUserModel {
     id: string,
-    userName: string,
     email: string,
     dislayName: string,
-    role: string,
     avatarUrl: string
   }

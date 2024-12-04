@@ -29,8 +29,6 @@ export default function VideoScreen() {
   const [video, setVideo] = useState<VideoSingle | null>(null);
   const { loading, error, videoInfor } = useGetVideoDetail(idVideo || "");
   const [expanded, setExpanded] = useState(false);
-  const [isPress, setIsPress] = useState(false);
-  const [isLike, setIsLike] = useState(false);
   const [isLiked, setIsLiked] = useState(false); 
   const [likes, setLikes] = useState(video?.like || 0);
 

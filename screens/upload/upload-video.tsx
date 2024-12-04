@@ -87,14 +87,14 @@ export default function UploadVideo() {
         name: fileName,
         type: fileType,
       });
-      await axios.post("https://api.microlap.vn/upload/image", formData, {
+      await axios.post("https://upload.hightfive.click/upload/", formData, {
         headers: {  
           'Content-Type': 'multipart/form-data',
         }
       })
       .then((res) => {
-        setImage(res.data.data.image_url);
-        setVideoUpload({...videoUpload, image_url: res.data.data.image_url});
+        setImage(res.data.url);
+        setVideoUpload({...videoUpload, image_url: res.data.url});
         setLoadingImage(false);
       })
       .catch((err) => {
