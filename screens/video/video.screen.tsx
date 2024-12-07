@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import MyVideoPlayer from '@/components/MyVideoPlayer';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import HeaderScreen from '@/components/HeaderScreen';
 import CommentSection from '@/components/CommentSection';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,13 +10,12 @@ import { useFonts } from '@expo-google-fonts/raleway';
 import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
 import RecomendVideo from '@/components/RecomendVideo';
 import useGetVideoDetail from '@/hooks/useGetVideoDetail';
-import useLike from '@/hooks/useLike';
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { axiosInstance } from '@/utils/AxiosConfig';
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { VideoDecoderProperties } from 'react-native-video';
+import { Toast } from 'react-native-toast-notifications';
 
 export default function VideoScreen() {
   let [fontsLoaded, fontError] = useFonts({
@@ -30,6 +29,7 @@ export default function VideoScreen() {
   const { loading, error, videoInfor } = useGetVideoDetail(idVideo || "");
   const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(false); 
+  const [isFollow, setIsFollow] = useState(false); 
   const [likes, setLikes] = useState(video?.like || 0);
 
   useEffect(() => {
@@ -49,6 +49,7 @@ export default function VideoScreen() {
     if (video) {
       setLikes(video.like || 0);
       setIsLiked(video.isLike)
+      setIsFollow(video.isSub)
       console.log(video);
       console.log(likes, isLiked)
     }
@@ -104,6 +105,32 @@ export default function VideoScreen() {
   if (!fontsLoaded && !fontError) {
     return null;
   }
+
+  const onFollow = async () => {
+    try {
+        const token = await AsyncStorage.getItem("access_token");
+        await axios.post(`${SERVER_URI}/api/Follow/PostFollow`, {
+            userId: video?.user.user_id
+        }, {
+            headers: {
+                "Cookie": token?.toString()
+              }
+        });
+
+        Toast.show('Follow succeeded', {
+            type: 'success',
+            duration: 1400,
+        });
+        setIsFollow(true);
+        // refreshFollowing();
+    } catch (error) {
+        console.error('Error when posting follow:', error);
+        Toast.show('Error while following', {
+            type: 'danger',
+            duration: 1400,
+        });
+    }
+};
 
   return (
     <View style={{ flex: 1 }}>
@@ -175,6 +202,34 @@ export default function VideoScreen() {
               </>
             )}
           </TouchableOpacity>
+
+          <View style={styles.uploaderContainer}>
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: "(routes)/profile-other",
+                  params: { userId: video?.user.user_id }
+                })
+              }
+            >
+              <Image 
+                source={{ uri: video?.user.user_avatar || "https://via.placeholder.com/50" }} 
+                style={styles.avatar} 
+              />
+            </TouchableOpacity>
+
+            <View style={styles.uploaderInfo}>
+              <Text style={styles.uploaderName}>{video?.user.user_name || "Unknown"}</Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.followButton, video?.isSub && styles.followingButton]}
+              onPress={onFollow}
+            >
+              <Text style={styles.followButtonText}>
+                {isFollow ? "Đã theo dõi" : "Theo dõi"}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           {/* Mô tả */}
           <View style={{ paddingHorizontal: 18 }}>
@@ -264,7 +319,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
   },
   likeButtonInactive: {
-    backgroundColor: "#F0F0F0", // Xám khi chưa like
+    backgroundColor: "#F0F0F0",
   },
   likeText: {
     fontSize: 18,
@@ -272,10 +327,59 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito_400Regular",
   },
   likeTextActive: {
-    color: "#FF4500", // Cam khi đã like
+    color: "#FF4500",
   },
   likeCount: {
     fontSize: 16,
     fontFamily: "Nunito_700Bold",
+  },
+  uploaderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 8,
+    marginHorizontal: 18,
+    marginTop: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  uploaderInfo: {
+    flexDirection: "column",
+  },
+  uploaderName: {
+    fontSize: 18,
+    fontFamily: "Nunito_700Bold",
+    color: "#333",
+  },
+  followerCount: {
+    fontSize: 14,
+    fontFamily: "Nunito_400Regular",
+    color: "#757575",
+  },
+  followButton: {
+    backgroundColor: "#0866ff",
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  followingButton: {
+    backgroundColor: "#E0E0E0",
+  },
+  followButtonText: {
+    color: "#FFFFFF",
+    fontFamily: "Nunito_700Bold",
+    fontSize: 16,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#E0E0E0",
+    marginRight: -40
   },
 });

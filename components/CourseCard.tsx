@@ -1,4 +1,13 @@
-import { ActivityIndicator, Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { 
+    ActivityIndicator, 
+    Button, 
+    Image, 
+    StyleSheet, 
+    Text, 
+    TouchableOpacity, 
+    View,
+    Linking 
+} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions"
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
@@ -64,18 +73,19 @@ export default function VideoCard({ item }: { item: Course }) {
         setLoadingBuyBtn(true);
         console.log(`${SERVER_URI}/api/Course/BuyCourse?courseId=${item._id}`);
         await axios
-            .post(`${SERVER_URI}/api/Course/BuyCourse?courseId=${item._id}`, {
+            .post(`${SERVER_URI}/api/Course/BuyCourse?courseId=${item._id}`, null, {
                 headers: {
                     "Cookie": token?.toString()
                 },
             })
             .then((res: any) => {
-                setLoadingBuyBtn(false);
-                setIsBuy(true);
-                Toast.show("Đã mua khóa học", {
-                    type: "success",
-                    duration: 1500
-                })
+                Linking.openURL(res.data)
+                // setLoadingBuyBtn(false);
+                // setIsBuy(true);
+                // Toast.show("Đã mua khóa học", {
+                //     type: "success",
+                //     duration: 1500
+                // })
             })
             .catch((error: any) => {
                 setLoadingBuyBtn(false);
