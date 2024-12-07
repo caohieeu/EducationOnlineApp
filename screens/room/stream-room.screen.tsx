@@ -7,7 +7,7 @@ import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import { Toast } from 'react-native-toast-notifications'
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { router, useLocalSearchParams } from 'expo-router'
-import { SERVER_URI } from '@/utils/uri'
+import { HLS_URI, SERVER_URI } from '@/utils/uri'
 import axios from 'axios'
 import { useRemoveFromRoom } from '@/hooks/useRemoveFromRoom'
 
@@ -123,7 +123,7 @@ export default function StreamRoomScreen() {
     const GetRooomDetail = async () => {
         await axios.get(`${SERVER_URI}/api/Room/${roomId}`)
         .then((res) => {
-            setUrlVideo(`http://10.0.2.2:8888/hls/${res.data.entity.room.videoUrl}/index.m3u8`);
+            setUrlVideo(`${HLS_URI}/${res.data.entity.room.videoUrl}/index.m3u8`);
             setRoom(res.data.entity.room)
         })
         .catch((err) => {
