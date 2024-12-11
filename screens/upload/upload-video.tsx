@@ -167,6 +167,7 @@ export default function UploadVideo() {
             image_url: videoUpload.image_url,
             video_size: videoUpload.video_size,
             file_type: videoUpload.file_type,
+            status: videoUpload.video_status == "public" ? 0 : 1,
             tags: videoUpload.tags
           },
           {
@@ -178,7 +179,8 @@ export default function UploadVideo() {
         })
         .catch((error) => {
           setPressLoading(false);
-          console.log(error);
+          console.log(videoUpload)
+          console.log("Error when post upload video: " + error);
         })
       } catch(err) {
         console.log(err);
@@ -191,10 +193,16 @@ export default function UploadVideo() {
       try {
         const info_video_storage = await AsyncStorage.getItem("info_video");
         const infor_video = JSON.parse(info_video_storage!);
-        setVideo(infor_video.uri);
-        setContentType(infor_video.mimeType);
-        setVideoUpload({...videoUpload, video_size: infor_video.fileSize})
-        setVideoUpload({...videoUpload, file_type: infor_video.type})
+        if(infor_video) {
+          console.log(infor_video.fileSize)
+          setVideo(infor_video.uri);
+          setContentType(infor_video.mimeType);
+          setVideoUpload({
+            ...videoUpload,
+            video_size: infor_video.fileSize, 
+            file_type: infor_video.type,
+          });
+        }
       } catch (err) {
         console.log("Error: " + err);
       }

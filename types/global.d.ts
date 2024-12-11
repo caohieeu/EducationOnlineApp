@@ -211,4 +211,34 @@ interface UpdateUserModel {
     email: string,
     dislayName: string,
     avatarUrl: string
-  }
+}
+
+interface RoomOwner {
+    user_id: string;
+    user_name: string;
+    user_avatar: string;
+}
+
+interface Attendee {
+    user_id: string;
+    user_name: string;
+    user_avatar: string;
+}
+
+interface RoomModel {
+    streamUrl: string;
+    streamKey: string;
+    room: {
+        _id: string;
+        roomKey: string;
+        roomTitle: string;
+        roomThumbnail: string;
+        status: number;
+        mode: number;
+        cDate: string;
+        owner: RoomOwner;
+        attendees: Attendee[];
+        videoUrl: string;
+        roomType: number;
+    };
+}

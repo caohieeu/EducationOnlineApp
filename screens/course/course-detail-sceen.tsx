@@ -99,7 +99,7 @@ export default function CourseDetailScreen() {
               </Text>
 
               <Text style={styles.textRegular}>
-                {10 + " Học sinh"}
+                {`${course?.students.length} Học sinh`}
               </Text>
             </View>
 

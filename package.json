@@ -62,7 +62,8 @@
     "react-native-webview": "^13.12.3",
     "react-query": "^3.39.3",
     "react-router-native": "^6.24.1",
-    "tldraw": "^2.4.5"
+    "tldraw": "^2.4.5",
+    "expo-updates": "~0.25.27"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

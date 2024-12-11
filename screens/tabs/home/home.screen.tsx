@@ -1,6 +1,7 @@
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Updates from 'expo-updates'; // Thay đổi import đúng
 import Header from '@/components/Header';
 import SearchInput from '@/components/SearchInput';
 import HomeBarSlider from '@/components/HomeBarSlider';
@@ -9,7 +10,6 @@ import AllCourse from '@/components/AllCourse';
 import { useQueryRequest } from '@/utils/useQueryRequest';
 import { useGetListVideo } from '@/hooks/useGetListVideo';
 import VideoCard from '@/components/VideoCard';
-import RecomendVideo from '@/components/RecomendVideo';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 
@@ -20,8 +20,10 @@ export default function HomeScreen() {
         page: 1,
         pageSize: 10,
     });
-    
+
     const { data: videos, isFetched, isLoading } = useGetListVideo(queryString);
+
+    const [refreshing, setRefreshing] = useState(false); // State để quản lý pull to refresh
 
     useFocusEffect(
         React.useCallback(() => {
@@ -36,7 +38,7 @@ export default function HomeScreen() {
             updateQueryState({ page });
         }
     }, [page]);
-    
+
     useEffect(() => {
         if (videos?.data) {
             setDataVideo((prevVideos) => {
@@ -54,32 +56,40 @@ export default function HomeScreen() {
         }
     }, [isLoading, isFetched, videos]);
 
+    const handleRefresh = useCallback(() => {
+        setRefreshing(true);
+        setPage(1); // Đặt lại trang về 1 khi kéo xuống
+        setDataVideo([]); // Xoá dữ liệu hiện tại để tải lại
+        updateQueryState({ page: 1 }); // Cập nhật query string
+
+        // Reload lại toàn bộ ứng dụng
+        Updates.reloadAsync(); // Gọi reloadAsync từ expo-updates
+    }, []);
+
     const Title = React.memo(() => (
-        <>
-            <View
+        <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginHorizontal: 10,
-              marginTop: 10
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginHorizontal: 10,
+                marginTop: 10
             }}
-          >
-            <Text style={{fontSize: 20, fontFamily: "Raleway_700Bold"}}>Video đề xuất</Text>
+        >
+            <Text style={{ fontSize: 20, fontFamily: "Raleway_700Bold" }}>Video đề xuất</Text>
             <TouchableOpacity
-              onPress={() => router.push({
-                pathname: "(routes)/video/all-video",
-            })}
+                onPress={() => router.push({
+                    pathname: "(routes)/video/all-video",
+                })}
             >
-              <Text
-                style={{fontSize: 15, color: "#2467EC", fontFamily: "Nunito_600SemiBold"}}
-              >
-                Xem tất cả
-              </Text>
+                <Text
+                    style={{ fontSize: 15, color: "#2467EC", fontFamily: "Nunito_600SemiBold" }}
+                >
+                    Xem tất cả
+                </Text>
             </TouchableOpacity>
-          </View>
-        </>
-    ))
+        </View>
+    ));
 
     const HeaderComponent = React.memo(() => (
         <>
@@ -87,7 +97,6 @@ export default function HomeScreen() {
             <HomeBarSlider />
             <AllCourse />
             <Title />
-            {/* <RecomendVideo type='horizontal' /> */}
         </>
     ));
 
@@ -110,33 +119,12 @@ export default function HomeScreen() {
                         onEndReached={fetchNextData}
                         onEndReachedThreshold={0.5}
                         showsVerticalScrollIndicator={false}
-                        ListFooterComponent={() => (isLoading ? <ActivityIndicator size="small" color="#0000ff" /> : null)}
-                    />
-                    {/* <FlatList
-                        style={{
-                            marginHorizontal: 16,
-                            marginTop: 30,
-                        }}
-                        data={dataVideo}
-                        ListHeaderComponent={() => (
-                            <>
-                                <SearchInput />
-                                <HomeBarSlider />
-                                <AllCourse />
-                                <RecomendVideo type='horizontal' />
-                            </>
-                        )}
-                        renderItem={({ item }) => <VideoCard item={item} />}
-                        keyExtractor={(item) => item.id.toString()}
-                        onEndReached={fetchNextData}
-                        onEndReachedThreshold={0.5}
-                        showsVerticalScrollIndicator={false}
                         ListFooterComponent={() => (
-                            isLoading ? (
-                                <ActivityIndicator size="small" color="#0000ff" />
-                            ) : null
+                            isLoading ? <ActivityIndicator size="small" color="#0000ff" /> : null
                         )}
-                    /> */}
+                        refreshing={refreshing} // Cập nhật trạng thái refreshing
+                        onRefresh={handleRefresh} // Gọi hàm handleRefresh khi kéo xuống
+                    />
                 </LinearGradient>
             )}
         </>

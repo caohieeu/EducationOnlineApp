@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { SERVER_URI } from '@/utils/uri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,7 @@ export default function useGetVideoDetail(idVideo: string) {
       if (!idVideo) {
         setLoading(false);
         setError("Video ID không hợp lệ.");
+        Toast.show('ID không hợp lệ', { type: 'error', duration: 1400 });
         return;
       }
 
@@ -30,8 +31,9 @@ export default function useGetVideoDetail(idVideo: string) {
               "Cookie": token?.toString(),
             },
         });
-        
+        Toast.show("Thành công", { type: 'success', duration: 1400 });
         setVideoInfor(response.data);
+
       } catch (err: any) {
         setError(err.message || "Đã xảy ra lỗi khi lấy chi tiết video.");
         Toast.show(err.message || 'Error fetching video details', { type: 'error', duration: 1400 });
@@ -43,5 +45,5 @@ export default function useGetVideoDetail(idVideo: string) {
     fetchVideoDetail();
   }, [idVideo]);
 
-  return { loading, error, videoInfor };
+  return useMemo(() => ({ loading, error, videoInfor }), [loading, error, videoInfor]);
 }

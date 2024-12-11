@@ -45,8 +45,8 @@ function RootLayoutNav() {
     if (contextValue) {
         contextValue.off("roomRequest");
         
-        contextValue.on("roomRequest", (message: RoomRequestModel) => {
-          console.log("join phonggg")
+        contextValue.on("roomRequest", (message) => {
+          console.log(message)
             if (message.res) {
                 Toast.show("Vào phòng thành công", {
                     type: "success",

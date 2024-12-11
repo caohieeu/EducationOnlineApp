@@ -13,7 +13,6 @@ import {
 } from "@expo-google-fonts/nunito"
 import { Video, ResizeMode } from 'expo-av';
 import { Toast } from 'react-native-toast-notifications';
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function MyVideoPlayer({ videoInfo }: { videoInfo: string }) {
     let [fontsLoaded, fontError] = useFonts({

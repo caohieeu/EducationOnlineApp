@@ -26,7 +26,7 @@ export default function VideoScreen() {
   const { videoInfo } = useLocalSearchParams();
   const [idVideo, setIdVideo] = useState("");
   const [video, setVideo] = useState<VideoSingle | null>(null);
-  const { loading, error, videoInfor } = useGetVideoDetail(idVideo || "");
+  // const { loading, error, videoInfor } = useGetVideoDetail(idVideo || "");
   const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(false); 
   const [isFollow, setIsFollow] = useState(false); 
@@ -34,26 +34,50 @@ export default function VideoScreen() {
 
   useEffect(() => {
     if (videoInfo) {
-      const videoObj = JSON.parse(JSON.stringify(videoInfo));
-      // setVideo(JSON.parse(videoObj.toString()));
-      var videoJSon = JSON.parse(videoObj.toString());
-      setIdVideo(videoJSon.id);
+      try {
+        const videoObj = JSON.parse(videoInfo.toString());
+        if (videoObj && videoObj.id) {
+          fetchVideoDetail(videoObj.id);
+        }
+      } catch (err) {
+        console.error("Error parsing videoInfo:", err);
+      }
     }
   }, [videoInfo]);
 
   useEffect(() => {
-    setVideo(videoInfor)
-  }, [idVideo, videoInfor])
+    // fetchVideoDetail();
+  }, [idVideo])
 
   useEffect(() => {
     if (video) {
       setLikes(video.like || 0);
       setIsLiked(video.isLike)
       setIsFollow(video.isSub)
-      console.log(video);
-      console.log(likes, isLiked)
     }
   }, [video]);
+
+  const fetchVideoDetail = async (videoId:string) => {
+    if (!videoId) {
+      Toast.show('ID không hợp lệ', { type: 'error', duration: 1400 });
+      return;
+    }
+
+      const token = await AsyncStorage.getItem("access_token");
+      
+      axios
+      .get(`${SERVER_URI}/api/Video/getVideo/${videoId}`, {
+        headers: {
+          "Cookie": token?.toString(),
+        },
+      })
+      .then((response) => {
+        setVideo(response.data);
+      })
+      .catch((err: any) => {
+        Toast.show(err.message || 'Error fetching video details', { type: 'error', duration: 1400 });
+      });
+  };
 
   const fetchLikeStatus = async () => {
     const token = await AsyncStorage.getItem("access_token");
