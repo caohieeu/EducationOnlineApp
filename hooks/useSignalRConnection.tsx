@@ -64,10 +64,10 @@ const useSignalRConnection = (
       connection.on("roomRequest", (message) => {
         console.log(message)
           if (message.res) {
-              Toast.show("Vào phòng thành công", {
-                  type: "success",
-                  duration: 1400
-              });
+              // Toast.show("Vào phòng thành công", {
+              //     type: "success",
+              //     duration: 1400
+              // });
               router.push({
                   pathname: "(routes)/room/stream-room",
                   params: { roomId: message.roomId }
@@ -78,10 +78,10 @@ const useSignalRConnection = (
       connection.on("OnRoomRemoved", (message) => {
         console.log(message)
           if (message) {
-              Toast.show("Bạn đã bị kick khỏi phòng", {
-                  type: "warning",
-                  duration: 1400
-              });
+              // Toast.show("Bạn đã bị kick khỏi phòng", {
+              //     type: "warning",
+              //     duration: 1400
+              // });
               router.push('/')
           }
       });
