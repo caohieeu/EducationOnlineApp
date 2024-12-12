@@ -31,14 +31,14 @@ export default function SignupScreen() {
     const User = {
         username: '',
         email: '',
-        displayName: '',
+        dislayName: '',
         password: '',
         role: ''
     };
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [buttonSpinner, setButtonSpinner] = useState(false);
     const [userSignUp, setUserSignUp] = useState(User);
-    const requiredFields: (keyof UserSignup)[] = ['userName', 'email', 'displayName', 'password', 'role'];
+    const requiredFields: (keyof UserSignup)[] = ['userName', 'email', 'dislayName', 'password', 'role'];
     const [required, setRequired] = useState("");
     const [error, setError] = useState({
         password: ""
@@ -92,7 +92,7 @@ export default function SignupScreen() {
         const userObject: UserSignup = {
             userName: userSignUp.username,
             email: userSignUp.email,
-            displayName: userSignUp.displayName,
+            dislayName: userSignUp.dislayName,
             password: userSignUp.password,
             role: userSignUp.role
         };
@@ -170,9 +170,9 @@ export default function SignupScreen() {
                             <TextInput 
                                 style={[commonStyles.input, {paddingLeft: 45}]}
                                 keyboardType="default"
-                                value={userSignUp.displayName}
+                                value={userSignUp.dislayName}
                                 placeholder="Tên hiển thị"
-                                onChangeText={(value) => setUserSignUp({...userSignUp, displayName:value})}
+                                onChangeText={(value) => setUserSignUp({...userSignUp, dislayName:value})}
                             />
                             <FontAwesome 
                                 style={{position: "absolute", left: 15, top: 17.8}}
@@ -235,14 +235,14 @@ export default function SignupScreen() {
                                 color={"#A1A1A1"}
                             />
                         </View>
-                        {error.password && (
+                        {/* {error.password && (
                         <View style={[commonStyles.errorContainer, {top: 275}]}>
                             <Entypo name="cross" size={18} color={"red"} />
                             <Text style={{color: "red", fontSize: 14, marginTop: -1}}>
                                 {error.password}
                             </Text>
                         </View>
-                    )}
+                        )} */}
 
                         <View style={{marginTop: 30}}>
                             <TouchableOpacity

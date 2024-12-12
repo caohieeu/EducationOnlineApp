@@ -25,7 +25,7 @@ type User = {
 type UserSignup = {
     userName: string;
     email: string;
-    displayName: string;
+    dislayName: string;
     password: string;
     role: string;
 }

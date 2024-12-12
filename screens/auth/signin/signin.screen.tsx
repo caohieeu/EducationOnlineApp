@@ -169,14 +169,14 @@ export default function SigninScreen() {
                                 color={"#A1A1A1"}
                             />
                         </View>
-                        {error.password && (
+                        {/* {error.password && (
                         <View style={[commonStyles.errorContainer, {top: 140}]}>
                             <Entypo name="cross" size={18} color={"red"} />
                             <Text style={{color: "red", fontSize: 14, marginTop: -1}}>
                                 {error.password}
                             </Text>
                         </View>
-                    )}
+                    )} */}
                     </View>
                     
                     <TouchableOpacity
