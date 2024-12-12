@@ -169,12 +169,12 @@ export default function StreamRoomScreen() {
                                 keyExtractor={(item) => item.user_id.toString()}
                                 renderItem={({ item }) => <AttendeeItem user={item} />}
                             />
-                            <View style={styles.chatInputContainer}>
+                            {/* <View style={styles.chatInputContainer}>
                                 <TextInput style={styles.chatBox} placeholder="Nhập tin nhắn" />
                                 <TouchableOpacity>
                                     <FontAwesome style={styles.iconSend} name="paper-plane" size={18} />
                                 </TouchableOpacity>
-                            </View>
+                            </View> */}
                         </View>
                     )}
                 </View>

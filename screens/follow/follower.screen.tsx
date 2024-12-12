@@ -124,8 +124,8 @@ export default function FollowerScreen() {
                       <Image
                         style={{ width: 60, height: 60, borderRadius: 100 }}
                         source={{
-                          uri: currentUser?.avatarUrl ||
-                            "https://res.cloudinary.com/dshp9jnuy/image/upload/v1665822253/avatars/nrxsg8sd9iy10bbsoenn.png"
+                          uri: String(item.followed?.user_avatar) || 
+                          "https://res.cloudinary.com/dshp9jnuy/image/upload/v1665822253/avatars/nrxsg8sd9iy10bbsoenn.png"
                         }}
                       />
                       <Text style={[commonStyles.item, {

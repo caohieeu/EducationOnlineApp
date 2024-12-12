@@ -19,6 +19,7 @@ import {
 import { router } from 'expo-router';
 
 export default function VideoCourseCard({ item }: { item: VideoCourse }) {
+    console.log(item)
     let [fontsLoaded, fontError] = useFonts({
         Raleway_700Bold,
         Nunito_400Regular,
@@ -46,7 +47,7 @@ export default function VideoCourseCard({ item }: { item: VideoCourse }) {
         <TouchableOpacity 
             onPress={() => router.push({
                 pathname: "(routes)/video",
-                params: { videoInfo : JSON.stringify(item) }
+                params: { videoInfo : JSON.stringify(item), typeVideo: "video_course" }
             })}
             style={styles.container}>
             <View style={{ paddingHorizontal: 10 }}>

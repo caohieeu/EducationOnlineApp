@@ -23,7 +23,7 @@ export default function VideoScreen() {
     Nunito_700Bold,
   });
 
-  const { videoInfo } = useLocalSearchParams();
+  const { videoInfo, typeVideo } = useLocalSearchParams();
   const [idVideo, setIdVideo] = useState("");
   const [video, setVideo] = useState<VideoSingle | null>(null);
   // const { loading, error, videoInfor } = useGetVideoDetail(idVideo || "");
@@ -34,13 +34,20 @@ export default function VideoScreen() {
 
   useEffect(() => {
     if (videoInfo) {
-      try {
-        const videoObj = JSON.parse(videoInfo.toString());
-        if (videoObj && videoObj.id) {
-          fetchVideoDetail(videoObj.id);
+      if(typeVideo == "video") {
+        try {
+          const videoObj = JSON.parse(videoInfo.toString());
+          if (videoObj && videoObj.id) {
+            console.log(typeVideo)
+            fetchVideoDetail(videoObj.id);
+          }
+        } catch (err) {
+          console.error("Error parsing videoInfo:", err);
         }
-      } catch (err) {
-        console.error("Error parsing videoInfo:", err);
+      }
+      else {
+        const videoObj = JSON.parse(JSON.stringify(videoInfo));
+        setVideo(JSON.parse(videoObj.toString()));
       }
     }
   }, [videoInfo]);
@@ -173,32 +180,36 @@ export default function VideoScreen() {
             onPress={() => setExpanded(!expanded)}
           >
             <Text style={styles.title}>{video?.title}</Text>
-            <Text style={styles.subInfo}>
+            {typeVideo == "video" && (
+              <Text style={styles.subInfo}>
               {`${video?.view || 0} lượt xem • ${formatUploadDate(
                 video?.time instanceof Date ? video.time.toISOString() : video?.time || ''
               )}`}
             </Text>
+            )}
 
             {/* Nút Like */}
-            <View style={styles.likeContainer}>
-            <TouchableOpacity
-              style={[
-                styles.likeButton,
-                isLiked ? styles.likeButtonActive : styles.likeButtonInactive,
-              ]}
-              onPress={handleLike}
-            >
-              <FontAwesome
-                style={{marginRight: 10}}
-                name={isLiked ? "thumbs-up" : "thumbs-o-up"}
-                size={24}
-                color={isLiked ? "#0866ff" : "#757575"}
-              />
-              <Text style={[styles.likeCount, isLiked && styles.likeTextActive]}>
-                {likes}
-              </Text>
-            </TouchableOpacity>
-          </View>
+            {typeVideo == "video" && (
+              <View style={styles.likeContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.likeButton,
+                  isLiked ? styles.likeButtonActive : styles.likeButtonInactive,
+                ]}
+                onPress={handleLike}
+              >
+                <FontAwesome
+                  style={{marginRight: 10}}
+                  name={isLiked ? "thumbs-up" : "thumbs-o-up"}
+                  size={24}
+                  color={isLiked ? "#0866ff" : "#757575"}
+                />
+                <Text style={[styles.likeCount, isLiked && styles.likeTextActive]}>
+                  {likes}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            )}
 
             {/* Hiển thị chi tiết khi expanded */}
             {expanded && (

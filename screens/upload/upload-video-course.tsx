@@ -469,7 +469,7 @@ export default function UploadVideoCourse() {
                       source={{ uri: item?.image_url || "https://static-00.iconduck.com/assets.00/image-not-found-01-icon-2048x2048-95wsi7vg.png"}}
                       style={styles.video}
                     />
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       onPress={() => pickImage(index)}
                       style={{
                         position: "absolute",
@@ -494,7 +494,7 @@ export default function UploadVideoCourse() {
                           color={"white"}
                         />
                       </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <View style={{
                       padding: 10,

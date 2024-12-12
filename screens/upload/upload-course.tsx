@@ -367,7 +367,7 @@ export default function UploadCourse() {
             </View>
           </View>
 
-          <View style={{
+          {/* <View style={{
             marginTop: 30
           }}>
             <Text
@@ -400,7 +400,7 @@ export default function UploadCourse() {
                 placeholder="0%"
               />
             </View>
-          </View>
+          </View> */}
 
           <View style={{
             marginTop: 25

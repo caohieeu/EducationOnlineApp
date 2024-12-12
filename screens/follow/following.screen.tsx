@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Loader from '@/loader/loader';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -44,7 +44,7 @@ export default function FollowingScreen() {
   if (!fontsLoaded && !fontError) {
     return null;
   }
-
+  
   return (
     <>
       {loading ? (
@@ -122,8 +122,8 @@ export default function FollowingScreen() {
                       <Image
                         style={{ width: 60, height: 60, borderRadius: 100 }}
                         source={{
-                          uri: currentUser?.avatarUrl ||
-                            "https://res.cloudinary.com/dshp9jnuy/image/upload/v1665822253/avatars/nrxsg8sd9iy10bbsoenn.png"
+                          uri: String(item.followed?.user_avatar) || 
+                          "https://res.cloudinary.com/dshp9jnuy/image/upload/v1665822253/avatars/nrxsg8sd9iy10bbsoenn.png"
                         }}
                       />
                       <Text style={[commonStyles.item, {

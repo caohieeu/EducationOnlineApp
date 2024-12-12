@@ -12,8 +12,12 @@ import { useGetListVideo } from '@/hooks/useGetListVideo';
 import VideoCard from '@/components/VideoCard';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
+import useUser from '@/hooks/useUser';
+import useSignalRConnection from '@/hooks/useSignalRConnection';
+import { Toast } from 'react-native-toast-notifications';
 
 export default function HomeScreen() {
+    const { user } = useUser();
     const [page, setPage] = useState(1);
     const [dataVideo, setDataVideo] = useState<VideoSingle[]>([]);
     const { queryString, updateQueryState } = useQueryRequest({
@@ -23,7 +27,41 @@ export default function HomeScreen() {
 
     const { data: videos, isFetched, isLoading } = useGetListVideo(queryString);
 
+    const contextValue = useSignalRConnection("edunimohub", {
+        userId: user?.id,
+      });
+
     const [refreshing, setRefreshing] = useState(false); // State để quản lý pull to refresh
+
+    // React.useEffect(() => {
+    //     if (contextValue) {
+    //         contextValue.off("roomRequest");
+            
+    //         contextValue.on("roomRequest", (message) => {
+    //           console.log(message)
+    //             if (message.res) {
+    //                 router.push({
+    //                     pathname: "(routes)/room/stream-room",
+    //                     params: { roomId: message.roomId }
+    //                 });
+    //             }
+    //         });
+    
+    //         contextValue.on("OnRoomRemoved", (message) => {
+    //           console.log(message)
+    //             if (message) {
+    //                 // Toast.show("Bạn đã bị kick khỏi phòng", {
+    //                 //     type: "warning",
+    //                 //     duration: 1400
+    //                 // });
+    //                 router.push('/')
+    //             }
+    //         });
+    //     }
+    //     return () => {
+    //         contextValue?.off("roomRequest");
+    //     };
+    // }, [contextValue]);
 
     useFocusEffect(
         React.useCallback(() => {

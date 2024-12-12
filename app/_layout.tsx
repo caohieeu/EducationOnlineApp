@@ -37,37 +37,14 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const { user } = useUser();
   const [isLogged, setIsLogged] = useState(false);
-  const contextValue = useSignalRConnection("edunimohub", {
-    userId: user?.id,
-  });
-  
-  React.useEffect(() => {
-    if (contextValue) {
-        contextValue.off("roomRequest");
-        
-        contextValue.on("roomRequest", (message) => {
-          console.log(message)
-            if (message.res) {
-                Toast.show("Vào phòng thành công", {
-                    type: "success",
-                    duration: 1400
-                });
-                router.push({
-                    pathname: "(routes)/room/stream-room",
-                    params: { roomId: message.roomId }
-                });
-            }
-        });
-    }
-    return () => {
-        contextValue?.off("roomRequest");
-    };
-}, [contextValue]);
+  // const contextValue = useSignalRConnection("edunimohub", {
+  //   userId: user?.id,
+  // });
 
 
   return <>{isLogged ? <View></View> : (
     <QueryClientProvider client={new QueryClient()}>
-      <SignalRContext.Provider value={contextValue}>
+      {/* <SignalRContext.Provider value={contextValue}> */}
       <ToastProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
@@ -92,7 +69,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(routes)/room/stream-room" />
         </Stack>
       </ToastProvider>
-      </SignalRContext.Provider>
+      {/* </SignalRContext.Provider> */}
     </QueryClientProvider>
   )}</>;
 }

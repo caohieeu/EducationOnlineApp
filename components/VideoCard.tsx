@@ -46,7 +46,7 @@ export default function VideoCard({ item }: { item: VideoSingle }) {
         <TouchableOpacity 
             onPress={() => router.push({
                 pathname: "(routes)/video",
-                params: { videoInfo : JSON.stringify(item) }
+                params: { videoInfo : JSON.stringify(item), typeVideo: "video" }
             })}
             style={styles.container}>
             <View style={{ paddingHorizontal: 10 }}>

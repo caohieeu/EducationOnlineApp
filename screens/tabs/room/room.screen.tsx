@@ -28,6 +28,7 @@ export default function RoomScreen() {
     return null;
   }
 
+
   const onJoinRoomRequest = async () => {
     const token = await AsyncStorage.getItem("access_token");
     axios.post(`${SERVER_URI}/api/Room/JoinRoomRequest`, {
