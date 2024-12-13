@@ -26,10 +26,13 @@ export default function HomeScreen() {
     });
 
     const { data: videos, isFetched, isLoading } = useGetListVideo(queryString);
-
+    const tmp = () => {
+        // Trigger the onGetChat function when the onChatLive event is received
+    };
     const contextValue = useSignalRConnection("edunimohub", {
         userId: user?.id,
-      });
+        onChatLiveCallBack:  tmp
+    });
 
     const [refreshing, setRefreshing] = useState(false); // State để quản lý pull to refresh
 

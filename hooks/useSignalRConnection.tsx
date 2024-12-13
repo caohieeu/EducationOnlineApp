@@ -11,6 +11,7 @@ import { router } from "expo-router";
 type HubParams = {
   userId?: string;
   roomId?: string;
+  onChatLiveCallBack: () => void; // Callback now takes a message as an argument
 };
 
 const useSignalRConnection = (
@@ -52,6 +53,7 @@ const useSignalRConnection = (
         newConnection.stop();
         connection?.off("roomRequest");
         connection?.off("OnRoomRemoved");
+        connection?.off("onChatLive");
         console.log("SignalR Connection Stopped");
       }
     };
@@ -75,6 +77,13 @@ const useSignalRConnection = (
           }
       });
 
+        connection.on("onChatLive", (message) => {
+          console.log(message)
+          if (params.onChatLiveCallBack) {
+            params.onChatLiveCallBack(); // Pass the message to the callback
+        }
+      });
+
       connection.on("OnRoomRemoved", (message) => {
         console.log(message)
           if (message) {
@@ -89,6 +98,7 @@ const useSignalRConnection = (
   return () => {
     connection?.off("roomRequest");
     connection?.off("OnRoomRemoved");
+    connection?.off("onChatLive");
   };
   }, [connection])
 

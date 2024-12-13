@@ -10,6 +10,10 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { HLS_URI, SERVER_URI } from '@/utils/uri'
 import axios from 'axios'
 import { useRemoveFromRoom } from '@/hooks/useRemoveFromRoom'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import useSignalRConnection from '@/hooks/useSignalRConnection'
+import useUser from '@/hooks/useUser'
+import { useSignalRContext } from '@/hooks/useSignalRContext'
 
 const AttendeeItem = ({ user }: { user: Attendee }) => {
     return (
@@ -23,23 +27,65 @@ const AttendeeItem = ({ user }: { user: Attendee }) => {
 }
 
 export default function StreamRoomScreen() {
+    const {user} = useUser();
+    const ChatLiveCallBack = () => {
+        onGetChat();
+    };
+    const contextValue = useSignalRConnection("edunimohub", {
+        userId: user?.id,
+        onChatLiveCallBack: ChatLiveCallBack
+    }    
+    );
     const { roomId } = useLocalSearchParams()
     const { mutate: removeUser } = useRemoveFromRoom()
     const [urlVideo, setUrlVideo] = useState('')
     const [room, setRoom] = useState(null)
+    const [textMessage, setTextMessge] = useState<SendMessageModel>({
+        room_id: roomId?.toString() || "", 
+        userAvatar: user?.avatarUrl,
+        userName: user?.userName,
+        content: "",
+        userId: user?.id
+    }
+    );
     const [roomInfo, setRoomInfo] = useState<RoomModel>();
+    const [chats, setChats] = useState<Chat[]>([]);
 
-    const chats: Chat[] = [
-        { id: '123', avatar: 'https://example.com/avatar1.png', name: 'Caohieeu', message: 'Bài này khó quá' },
-        { id: '124', avatar: 'https://example.com/avatar2.png', name: 'Caokay', message: 'Bài này dễ quá' },
-        // thêm các chat khác
-    ]
+    const ChatItem = ({ chat }: { chat: Chat }) => {
+        return (
+            <View>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 15,
+                    marginHorizontal: 15
+                }}>
+                    <Image
+                        source={{ uri: chat.userAvatar || 
+                            "https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg"}} 
+                        style={{ width: 40, height: 40, borderRadius: 100 }} 
+                    />
+                    <View style={{marginLeft: 10}}>
+                    <Text style={{fontWeight: 600, color: "white"}}>
+                        {chat.userName}
+                    </Text>
+                    <Text style={{
+                        alignItems: "center",
+                        color: "white"
+                    }}>
+                        {chat.content}
+                    </Text>
+                    </View>
+                </View>
+            </View>
+        )
+    }
     
     const videoRef = useRef<Video>(null)
     const [activeButton, setActiveButton] = useState('Detail')
     const [onMic, setOnMic] = useState(false)
     const [isFullscreen, setIsFullscreen] = useState(false)
-
+    
     const setOrientationToLandscape = async () => {
         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE)
     }
@@ -84,8 +130,39 @@ export default function StreamRoomScreen() {
         })
     }
 
+    const onGetChat = async () => {
+        await axios.get(`${SERVER_URI}/api/Room/GetChat/${roomId}`)
+            .then((res) => {
+                console.log(res.data.data[0])
+                var lstChat = res.data.data;
+                setChats(lstChat);
+            })
+            .catch((err) => {
+                console.log("Error when get chat: " + err);
+            })
+        
+    }
+
+    const onSendChat = async (message:SendMessageModel) => {
+        const token = await AsyncStorage.getItem("access_token");
+        
+        console.log(textMessage)
+        await axios.post(`${SERVER_URI}/api/Room/SendChat`, message, {
+            headers: {
+            "Cookie": token?.toString()
+            }
+        })
+        .then((res) => {
+            console.log("Send success");
+        })
+        .catch((err) => {
+            console.log("Error when send chat: " + err);
+        });
+    }
+
     useEffect(() => {
         GetRoomDetail()
+
         return () => {
             console.log('Component Unmount')
         }
@@ -152,6 +229,14 @@ export default function StreamRoomScreen() {
                                 Học viên
                             </Text>
                         </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.button, activeButton === 'Chat' && styles.activeButton]}
+                            onPress={() => setActiveButton('Chat')}
+                        >
+                            <Text style={[styles.buttonText, activeButton === 'Chat' && styles.activeButtonText]}>
+                                Tin nhắn
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     {activeButton === 'Detail' && (
                         <View style={styles.detailSection}>
@@ -175,6 +260,46 @@ export default function StreamRoomScreen() {
                                     <FontAwesome style={styles.iconSend} name="paper-plane" size={18} />
                                 </TouchableOpacity>
                             </View> */}
+                        </View>
+                    )}
+                    {activeButton == "Chat" && (
+                        <View style={{
+                            marginTop: 15,
+                        }}>
+                            <FlatList
+                                ref={null}
+                                style={{ height: 248 }}
+                                data={chats}
+                                keyExtractor={(item) => item._id.toString()}
+                                renderItem={({ item }) => <ChatItem chat={item} />}
+                            />
+                            <View style={{ position: 'absolute', bottom: -69, left: 0, right: 0, padding: 10 }}>
+                                <TextInput
+                                    value={textMessage.content}
+                                    onChangeText={(text) => 
+                                        setTextMessge({
+                                            ...textMessage, 
+                                            room_id: "675aecf3ea3482a4e6372b4e", 
+                                            userAvatar: user?.avatarUrl,
+                                            userName: user?.userName,
+                                            userId: user?.id,
+                                            content: text
+                                        })
+                                    }
+                                    style={[styles.chatBox]}
+                                    placeholder='Nhập tin nhắn'
+                                    placeholderTextColor={'white'}>
+                                </TextInput>
+                                <TouchableOpacity
+                                    onPress={() => onSendChat(textMessage)}
+                                >
+                                    <FontAwesome
+                                        style={styles.iconSend}
+                                        name='paper-plane'
+                                        size={18}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     )}
                 </View>
@@ -206,7 +331,6 @@ const styles = StyleSheet.create({
         marginTop: 25,
         backgroundColor: '#E1E9F8',
         borderRadius: 50,
-        marginHorizontal: 70,
     },
     button: {
         paddingVertical: 10,
@@ -249,13 +373,15 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: '#575757',
+        borderColor: 'white',
         fontSize: 17,
+        color: "white"
     },
     iconSend: {
         position: 'absolute',
         top: -30,
         right: 20,
+        color: "white"
     },
 })
 

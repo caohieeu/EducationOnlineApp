@@ -50,6 +50,13 @@ export default function RoomScreen() {
     sendMessage()
 }
 
+// const onJoinRoomRequest = () => {
+//   router.push({
+//     pathname: "(routes)/room/stream-room",
+//     params: { roomId: message.roomId }
+// });
+// }
+
 const sendMessage = () => {
     if (connection) {
         connection.invoke('ConnectToRoom')

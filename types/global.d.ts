@@ -160,10 +160,12 @@ interface Course {
   };
 
 interface Chat {
-    id: string,
-    avatar: string,
-    name: string,
-    message: string,
+    _id: string,
+    content: string,
+    room_id: string,
+    userAvatar: string,
+    userId: string,
+    userName: string
 }
 
 interface PaginationResponse<Data> extends PaginationState {
@@ -241,4 +243,12 @@ interface RoomModel {
         videoUrl: string;
         roomType: number;
     };
+}
+
+interface SendMessageModel {
+    userId: string,
+    userName: string,
+    userAvatar: string,
+    content: string,
+    room_id: string
 }
